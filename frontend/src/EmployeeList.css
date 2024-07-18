@@ -1,0 +1,24 @@
+/* src/EmployeeList.css */
+.employee-list-container {
+    text-align: center;
+    padding: 20px;
+}
+
+.employee-list-container table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.employee-list-container table, th, td {
+    border: 1px solid #ddd;
+}
+
+.employee-list-container th, td {
+    padding: 10px;
+    text-align: left;
+}
+
+.employee-list-container th {
+    background-color: #f2f2f2;
+}

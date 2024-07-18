@@ -1,27 +1,33 @@
+// src/EmployeeList.js
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import './List.css';
+import './EmployeeList.css';
 
 function EmployeeList() {
     const [employees, setEmployees] = useState([]);
 
     useEffect(() => {
-        axios.get('/api/employees')
+        fetch('http://localhost:8080/api/employees')
             .then(response => {
-                setEmployees(response.data);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
             })
-            .catch(error => {
-                console.error(error);
-                // Handle error
+            .then(data => {
+                setEmployees(data);
+            })
+            .catch((error) => {
+                console.error('Error fetching employees:', error);
             });
     }, []);
 
     return (
-        <div className="list-container">
-            <h1>Employee List</h1>
+        <div className="employee-list-container">
+            <h2>Employee List</h2>
             <table>
                 <thead>
                 <tr>
+                    <th>ID</th>
                     <th>First Name</th>
                     <th>Last Name</th>
                     <th>Email</th>
@@ -30,8 +36,9 @@ function EmployeeList() {
                 </tr>
                 </thead>
                 <tbody>
-                {employees.map(employee => (
+                {employees.map((employee) => (
                     <tr key={employee.id}>
+                        <td>{employee.id}</td>
                         <td>{employee.firstName}</td>
                         <td>{employee.lastName}</td>
                         <td>{employee.email}</td>

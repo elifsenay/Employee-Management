@@ -1,0 +1,57 @@
+/* src/EmployeeEntry.css */
+.employee-entry-container {
+    text-align: center;
+    padding: 20px;
+}
+
+.employee-entry-container form {
+    display: inline-block;
+    text-align: left;
+}
+
+.employee-entry-container form label {
+    display: block;
+    margin-top: 10px;
+}
+
+.employee-entry-container form input {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+}
+
+.employee-entry-container form button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.employee-entry-container form button:hover {
+    background-color: #0056b3;
+}
+
+.feedback {
+    margin-top: 20px;
+    font-size: 16px;
+    color: green;
+}
+
+.feedback.error {
+    color: red;
+}
+
+.employee-entry-container p {
+    margin-top: 20px;
+}
+
+.employee-entry-container a {
+    text-decoration: none;
+    color: #007BFF;
+}
+
+.employee-entry-container a:hover {
+    color: #0056b3;
+}

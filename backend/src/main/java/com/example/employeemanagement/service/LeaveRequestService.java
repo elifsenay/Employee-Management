@@ -1,11 +1,15 @@
 package com.example.employeemanagement.service;
 
+import com.example.employeemanagement.model.Employee;
 import com.example.employeemanagement.model.LeaveRequest;
+import com.example.employeemanagement.repository.EmployeeRepository;
 import com.example.employeemanagement.repository.LeaveRequestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class LeaveRequestService {
@@ -13,34 +17,27 @@ public class LeaveRequestService {
     @Autowired
     private LeaveRequestRepository leaveRequestRepository;
 
+    @Autowired
+    private EmployeeRepository employeeRepository;
+
+    public LeaveRequest saveLeaveRequest(LeaveRequest leaveRequest) {
+        Optional<Employee> optionalEmployee = employeeRepository.findById(leaveRequest.getEmployeeId());
+        if (optionalEmployee.isPresent()) {
+            Employee employee = optionalEmployee.get();
+            long daysBetween = ChronoUnit.DAYS.between(leaveRequest.getStartDate(), leaveRequest.getEndDate());
+            if (employee.getRemainingLeaveDays() >= daysBetween) {
+                employee.setRemainingLeaveDays(employee.getRemainingLeaveDays() - (int) daysBetween);
+                employeeRepository.save(employee);
+                return leaveRequestRepository.save(leaveRequest);
+            } else {
+                throw new IllegalStateException("Not enough leave days available");
+            }
+        } else {
+            throw new IllegalArgumentException("Employee not found");
+        }
+    }
+
     public List<LeaveRequest> getAllLeaveRequests() {
         return leaveRequestRepository.findAll();
-    }
-
-    public LeaveRequest createLeaveRequest(LeaveRequest leaveRequest) {
-        return leaveRequestRepository.save(leaveRequest);
-    }
-
-    public LeaveRequest getLeaveRequestById(Long id) {
-        return leaveRequestRepository.findById(id).orElse(null);
-    }
-
-    public LeaveRequest updateLeaveRequest(Long id, LeaveRequest leaveRequestDetails) {
-        LeaveRequest leaveRequest = getLeaveRequestById(id);
-        if (leaveRequest != null) {
-            leaveRequest.setEmployeeId(leaveRequestDetails.getEmployeeId());
-            leaveRequest.setLeaveDays(leaveRequestDetails.getLeaveDays());
-            return leaveRequestRepository.save(leaveRequest);
-        }
-        return null;
-    }
-
-    public boolean deleteLeaveRequest(Long id) {
-        LeaveRequest leaveRequest = getLeaveRequestById(id);
-        if (leaveRequest != null) {
-            leaveRequestRepository.delete(leaveRequest);
-            return true;
-        }
-        return false;
     }
 }

@@ -4,25 +4,27 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Table;
+import java.time.LocalDate;
 
 @Entity
-@Table(name = "leave_request")
 public class LeaveRequest {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long employeeId;
-    private int leaveDays;
+    private LocalDate startDate;
+    private LocalDate endDate;
 
     // Constructors, getters and setters
+
     public LeaveRequest() {
     }
 
-    public LeaveRequest(Long employeeId, int leaveDays) {
+    public LeaveRequest(Long employeeId, LocalDate startDate, LocalDate endDate) {
         this.employeeId = employeeId;
-        this.leaveDays = leaveDays;
+        this.startDate = startDate;
+        this.endDate = endDate;
     }
 
     public Long getId() {
@@ -41,11 +43,19 @@ public class LeaveRequest {
         this.employeeId = employeeId;
     }
 
-    public int getLeaveDays() {
-        return leaveDays;
+    public LocalDate getStartDate() {
+        return startDate;
     }
 
-    public void setLeaveDays(int leaveDays) {
-        this.leaveDays = leaveDays;
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
     }
 }

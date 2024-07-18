@@ -4,10 +4,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Table;
 
 @Entity
-@Table(name = "employee")
 public class Employee {
 
     @Id
@@ -17,20 +15,21 @@ public class Employee {
     private String lastName;
     private String email;
     private String department;
-    private int remainingLeaveDays;
+    private int remainingLeaveDays = 15; // Default value
 
     // Constructors, getters and setters
     public Employee() {
     }
 
-    public Employee(String firstName, String lastName, String email, String department, int remainingLeaveDays) {
+    public Employee(String firstName, String lastName, String email, String department) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.department = department;
-        this.remainingLeaveDays = remainingLeaveDays;
+        this.remainingLeaveDays = 15; // Default value
     }
 
+    // Getters and Setters
     public Long getId() {
         return id;
     }

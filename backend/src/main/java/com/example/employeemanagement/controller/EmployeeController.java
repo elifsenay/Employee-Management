@@ -7,48 +7,42 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/employees")
+@CrossOrigin(origins = "http://localhost:3000")
 public class EmployeeController {
 
     @Autowired
     private EmployeeService employeeService;
+
+    @PostMapping
+    public Employee addEmployee(@RequestBody Employee employee) {
+        return employeeService.saveEmployee(employee);
+    }
 
     @GetMapping
     public List<Employee> getAllEmployees() {
         return employeeService.getAllEmployees();
     }
 
-    @PostMapping
-    public Employee createEmployee(@RequestBody Employee employee) {
-        return employeeService.createEmployee(employee);
-    }
-
     @GetMapping("/{id}")
     public ResponseEntity<Employee> getEmployeeById(@PathVariable Long id) {
-        Employee employee = employeeService.getEmployeeById(id);
-        if (employee != null) {
-            return ResponseEntity.ok(employee);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        Optional<Employee> employee = employeeService.getEmployeeById(id);
+        return employee.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Employee> updateEmployee(@PathVariable Long id, @RequestBody Employee employeeDetails) {
-        Employee updatedEmployee = employeeService.updateEmployee(id, employeeDetails);
-        if (updatedEmployee != null) {
-            return ResponseEntity.ok(updatedEmployee);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        Optional<Employee> updatedEmployee = employeeService.updateEmployee(id, employeeDetails);
+        return updatedEmployee.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteEmployee(@PathVariable Long id) {
-        boolean isDeleted = employeeService.deleteEmployee(id);
-        if (isDeleted) {
+        boolean deleted = employeeService.deleteEmployee(id);
+        if (deleted) {
             return ResponseEntity.noContent().build();
         } else {
             return ResponseEntity.notFound().build();

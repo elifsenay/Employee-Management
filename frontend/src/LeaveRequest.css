@@ -1,0 +1,57 @@
+/* src/LeaveRequest.css */
+.leave-request-container {
+    text-align: center;
+    padding: 20px;
+}
+
+.leave-request-container form {
+    display: inline-block;
+    text-align: left;
+}
+
+.leave-request-container form label {
+    display: block;
+    margin-top: 10px;
+}
+
+.leave-request-container form input {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+}
+
+.leave-request-container form button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.leave-request-container form button:hover {
+    background-color: #0056b3;
+}
+
+.feedback {
+    margin-top: 20px;
+    font-size: 16px;
+    color: green;
+}
+
+.feedback.error {
+    color: red;
+}
+
+.leave-request-container p {
+    margin-top: 20px;
+}
+
+.leave-request-container a {
+    text-decoration: none;
+    color: #007BFF;
+}
+
+.leave-request-container a:hover {
+    color: #0056b3;
+}

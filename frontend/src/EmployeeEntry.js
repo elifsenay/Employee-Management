@@ -1,55 +1,56 @@
+// src/EmployeeEntry.js
 import React, { useState } from 'react';
-import axios from 'axios';
-import './Form.css';
+import { Link } from 'react-router-dom';
+import './EmployeeEntry.css';
 
 function EmployeeEntry() {
-    const [employee, setEmployee] = useState({
-        firstName: '',
-        lastName: '',
-        email: '',
-        department: ''
-    });
-
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setEmployee({ ...employee, [name]: value });
-    };
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [email, setEmail] = useState('');
+    const [department, setDepartment] = useState('');
+    const [feedback, setFeedback] = useState('');
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        axios.post('/api/employees', employee)
-            .then(response => {
-                console.log(response.data);
-                // Handle success
+        fetch('http://localhost:8080/api/employees', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ firstName, lastName, email, department }),
+        })
+            .then(response => response.json())
+            .then(data => {
+                setFeedback('Employee added successfully!');
+                setFirstName('');
+                setLastName('');
+                setEmail('');
+                setDepartment('');
             })
-            .catch(error => {
-                console.error(error);
-                // Handle error
+            .catch((error) => {
+                setFeedback('Error adding employee. Please try again.');
+                console.error('Error:', error);
             });
     };
 
     return (
-        <div className="form-container">
-            <h1>Employee Entry</h1>
+        <div className="employee-entry-container">
+            <h2>Add Employee</h2>
             <form onSubmit={handleSubmit}>
-                <label>
-                    First Name:
-                    <input type="text" name="firstName" value={employee.firstName} onChange={handleChange} />
-                </label>
-                <label>
-                    Last Name:
-                    <input type="text" name="lastName" value={employee.lastName} onChange={handleChange} />
-                </label>
-                <label>
-                    Email:
-                    <input type="email" name="email" value={employee.email} onChange={handleChange} />
-                </label>
-                <label>
-                    Department:
-                    <input type="text" name="department" value={employee.department} onChange={handleChange} />
-                </label>
-                <button type="submit">Submit</button>
+                <label>First Name:</label>
+                <input type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
+                <label>Last Name:</label>
+                <input type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} />
+                <label>Email:</label>
+                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+                <label>Department:</label>
+                <input type="text" value={department} onChange={(e) => setDepartment(e.target.value)} />
+                <button type="submit">Add</button>
             </form>
+            {feedback && <p className="feedback">{feedback}</p>}
+            <p>
+                <Link to="/employee-list">Go to Employee List</Link>
+            </p>
         </div>
     );
 }
