@@ -1,4 +1,3 @@
-/* src/LeaveRequest.css */
 .leave-request-container {
     text-align: center;
     padding: 20px;
@@ -7,6 +6,7 @@
 .leave-request-container form {
     display: inline-block;
     text-align: left;
+    margin-bottom: 20px;
 }
 
 .leave-request-container form label {
@@ -43,15 +43,29 @@
     color: red;
 }
 
-.leave-request-container p {
-    margin-top: 20px;
+.leave-requests-box {
+    border: 1px solid #ccc;
+    padding: 20px;
+    margin: 10px auto;
+    width: 80%;
+    max-width: 800px;
+    text-align: center;
 }
 
-.leave-request-container a {
-    text-decoration: none;
-    color: #007BFF;
+.leave-requests-box table {
+    width: 100%;
+    border-collapse: collapse;
 }
 
-.leave-request-container a:hover {
-    color: #0056b3;
+.leave-requests-box th, td {
+    padding: 10px;
+    border: 1px solid #ddd;
+}
+
+.leave-requests-box th {
+    background-color: #f2f2f2;
+}
+
+.leave-requests-box td:nth-child(1) {
+    text-align: center;
 }

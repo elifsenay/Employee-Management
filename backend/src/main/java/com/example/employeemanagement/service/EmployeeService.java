@@ -15,6 +15,9 @@ public class EmployeeService {
     private EmployeeRepository employeeRepository;
 
     public Employee saveEmployee(Employee employee) {
+        if (employee.getRemainingLeaveDays() == 0) {
+            employee.setRemainingLeaveDays(15);
+        }
         return employeeRepository.save(employee);
     }
 
@@ -32,6 +35,7 @@ public class EmployeeService {
             employee.setLastName(employeeDetails.getLastName());
             employee.setEmail(employeeDetails.getEmail());
             employee.setDepartment(employeeDetails.getDepartment());
+            employee.setRemainingLeaveDays(employeeDetails.getRemainingLeaveDays());
             return employeeRepository.save(employee);
         });
     }

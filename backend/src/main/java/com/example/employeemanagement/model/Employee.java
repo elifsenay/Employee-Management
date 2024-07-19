@@ -21,12 +21,12 @@ public class Employee {
     public Employee() {
     }
 
-    public Employee(String firstName, String lastName, String email, String department) {
+    public Employee(String firstName, String lastName, String email, String department, int remainingLeaveDays) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.department = department;
-        this.remainingLeaveDays = 15; // Default value
+        this.remainingLeaveDays = remainingLeaveDays; // Default value
     }
 
     // Getters and Setters

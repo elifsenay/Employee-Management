@@ -1,20 +1,26 @@
 package com.example.employeemanagement.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
+@Table(name = "leave_request")
 public class LeaveRequest {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(name = "employee_id")
     private Long employeeId;
+
+    @Column(name = "start_date")
     private LocalDate startDate;
+
+    @Column(name = "end_date")
     private LocalDate endDate;
+
+    @Column(name = "leave_days")
+    private int leaveDays;
 
     // Constructors, getters and setters
 
@@ -57,5 +63,13 @@ public class LeaveRequest {
 
     public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
+    }
+
+    public int getLeaveDays() {
+        return leaveDays;
+    }
+
+    public void setLeaveDays(int leaveDays) {
+        this.leaveDays = leaveDays;
     }
 }
