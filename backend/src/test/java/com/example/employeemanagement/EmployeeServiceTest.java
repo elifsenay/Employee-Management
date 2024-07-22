@@ -1,22 +1,25 @@
-package com.example.employeemanagement.service;
+package com.example.employeemanagement;
 
 import com.example.employeemanagement.model.Employee;
 import com.example.employeemanagement.repository.EmployeeRepository;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import com.example.employeemanagement.service.EmployeeService;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-class EmployeeServiceTest {
+@RunWith(MockitoJUnitRunner.class)
+public class EmployeeServiceTest {
 
     @Mock
     private EmployeeRepository employeeRepository;
@@ -24,14 +27,14 @@ class EmployeeServiceTest {
     @InjectMocks
     private EmployeeService employeeService;
 
-    @BeforeEach
-    void setUp() {
+    @Before
+    public void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 
     // Positive Test Case: Save employee successfully
     @Test
-    void testSaveEmployee() {
+    public void testSaveEmployee() {
         Employee employee = new Employee();
         when(employeeRepository.save(employee)).thenReturn(employee);
 
@@ -44,7 +47,7 @@ class EmployeeServiceTest {
 
     // Positive Test Case: Get all employees
     @Test
-    void testGetAllEmployees() {
+    public void testGetAllEmployees() {
         Employee employee1 = new Employee();
         Employee employee2 = new Employee();
         List<Employee> employees = Arrays.asList(employee1, employee2);
@@ -59,7 +62,7 @@ class EmployeeServiceTest {
 
     // Positive Test Case: Get employee by ID
     @Test
-    void testGetEmployeeById() {
+    public void testGetEmployeeById() {
         Employee employee = new Employee();
         when(employeeRepository.findById(1L)).thenReturn(Optional.of(employee));
 
@@ -71,7 +74,7 @@ class EmployeeServiceTest {
 
     // Negative Test Case: Get employee by non-existent ID
     @Test
-    void testGetEmployeeByIdNotFound() {
+    public void testGetEmployeeByIdNotFound() {
         when(employeeRepository.findById(1L)).thenReturn(Optional.empty());
 
         Optional<Employee> foundEmployee = employeeService.getEmployeeById(1L);
@@ -81,7 +84,7 @@ class EmployeeServiceTest {
 
     // Positive Test Case: Update employee successfully
     @Test
-    void testUpdateEmployee() {
+    public void testUpdateEmployee() {
         Employee existingEmployee = new Employee();
         Employee updatedDetails = new Employee();
         updatedDetails.setFirstName("John");
@@ -101,7 +104,7 @@ class EmployeeServiceTest {
 
     // Negative Test Case: Update employee with non-existent ID
     @Test
-    void testUpdateEmployeeNotFound() {
+    public void testUpdateEmployeeNotFound() {
         Employee updatedDetails = new Employee();
         when(employeeRepository.findById(1L)).thenReturn(Optional.empty());
 
@@ -113,7 +116,7 @@ class EmployeeServiceTest {
 
     // Positive Test Case: Delete employee successfully
     @Test
-    void testDeleteEmployee() {
+    public void testDeleteEmployee() {
         Employee employee = new Employee();
         when(employeeRepository.findById(1L)).thenReturn(Optional.of(employee));
 
@@ -125,7 +128,7 @@ class EmployeeServiceTest {
 
     // Negative Test Case: Delete employee with non-existent ID
     @Test
-    void testDeleteEmployeeNotFound() {
+    public void testDeleteEmployeeNotFound() {
         when(employeeRepository.findById(1L)).thenReturn(Optional.empty());
 
         boolean isDeleted = employeeService.deleteEmployee(1L);
