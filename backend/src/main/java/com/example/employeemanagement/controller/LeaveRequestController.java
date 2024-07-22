@@ -25,6 +25,7 @@ public class LeaveRequestController {
 
     @PostMapping
     public ResponseEntity<LeaveRequest> addLeaveRequest(@RequestBody LeaveRequest leaveRequest) {
+        LeaveRequest savedLeaveRequest = leaveRequestService.saveLeaveRequest(leaveRequest);
         return new ResponseEntity<>(savedLeaveRequest, HttpStatus.OK);
     }
 
