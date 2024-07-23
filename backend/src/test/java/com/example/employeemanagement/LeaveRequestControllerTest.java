@@ -3,6 +3,8 @@ package com.example.employeemanagement;
 import com.example.employeemanagement.controller.LeaveRequestController;
 import com.example.employeemanagement.exception.GlobalExceptionHandler;
 import com.example.employeemanagement.model.LeaveRequest;
+import com.example.employeemanagement.repository.EmployeeRepository;
+import com.example.employeemanagement.repository.LeaveRequestRepository;
 import com.example.employeemanagement.service.LeaveRequestService;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,6 +34,12 @@ public class LeaveRequestControllerTest {
 
     @Mock
     private LeaveRequestService leaveRequestService;
+
+    @Mock
+    private LeaveRequestRepository leaveRequestRepository;
+
+    @Mock
+    private EmployeeRepository employeeRepository;
 
     @InjectMocks
     private LeaveRequestController leaveRequestController;
@@ -77,15 +85,7 @@ public class LeaveRequestControllerTest {
                 .andExpect(jsonPath("$.employeeId").value(1));
     }
 
-    // Negative Test Case: Retrieving a non-existent leave request by ID
-    @Test
-    public void testGetLeaveRequestById_Negative() throws Exception {
-        when(leaveRequestService.getLeaveRequestById(anyLong())).thenReturn(Optional.empty());
 
-        mockMvc.perform(get("/api/leaverequests/1")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
-    }
 
     // Positive Test Case: Retrieving all leave requests successfully
     @Test
@@ -111,25 +111,13 @@ public class LeaveRequestControllerTest {
                 .andExpect(jsonPath("$[1].employeeId").value(2));
     }
 
-    /*
-    // Positive Test Case: Deleting an existing leave request successfully
+    // Negative Test Case: Retrieving a non-existent leave request by ID
     @Test
-    public void testDeleteLeaveRequest() throws Exception {
-        when(leaveRequestService.deleteLeaveRequest(anyLong())).thenReturn(true);
+    public void testGetLeaveRequestById_Negative() throws Exception {
+        when(leaveRequestService.getLeaveRequestById(anyLong())).thenReturn(Optional.empty());
 
-        mockMvc.perform(delete("/api/leaverequests/1")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNoContent());
-    }
-
-    // Negative Test Case: Deleting a non-existent leave request
-    @Test
-    public void testDeleteLeaveRequest_Negative() throws Exception {
-        when(leaveRequestService.deleteLeaveRequest(anyLong())).thenReturn(false);
-
-        mockMvc.perform(delete("/api/leaverequests/1")
+        mockMvc.perform(get("/api/leaverequests/1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
-     */
 }

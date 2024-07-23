@@ -20,6 +20,7 @@ public class SecurityConfig {
                 .cors().and().csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/api/**").permitAll()
+                .antMatchers("/admin").hasRole("USER")
                 .anyRequest().authenticated()
                 .and()
                 .formLogin().permitAll()

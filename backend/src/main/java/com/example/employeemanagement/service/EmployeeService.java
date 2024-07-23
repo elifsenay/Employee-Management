@@ -31,14 +31,25 @@ public class EmployeeService {
 
     public Optional<Employee> updateEmployee(Long id, Employee employeeDetails) {
         return employeeRepository.findById(id).map(employee -> {
-            employee.setFirstName(employeeDetails.getFirstName());
-            employee.setLastName(employeeDetails.getLastName());
-            employee.setEmail(employeeDetails.getEmail());
-            employee.setDepartment(employeeDetails.getDepartment());
-            employee.setRemainingLeaveDays(employeeDetails.getRemainingLeaveDays());
+            if (employeeDetails.getFirstName() != null) {
+                employee.setFirstName(employeeDetails.getFirstName());
+            }
+            if (employeeDetails.getLastName() != null) {
+                employee.setLastName(employeeDetails.getLastName());
+            }
+            if (employeeDetails.getEmail() != null) {
+                employee.setEmail(employeeDetails.getEmail());
+            }
+            if (employeeDetails.getDepartment() != null) {
+                employee.setDepartment(employeeDetails.getDepartment());
+            }
+            if (employeeDetails.getRemainingLeaveDays() != 0) {
+                employee.setRemainingLeaveDays(employeeDetails.getRemainingLeaveDays());
+            }
             return employeeRepository.save(employee);
         });
     }
+
 
     public boolean deleteEmployee(Long id) {
         return employeeRepository.findById(id).map(employee -> {

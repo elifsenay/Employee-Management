@@ -72,16 +72,6 @@ public class EmployeeServiceTest {
         assertEquals(employee, foundEmployee.get());
     }
 
-    // Negative Test Case: Get employee by non-existent ID
-    @Test
-    public void testGetEmployeeByIdNotFound() {
-        when(employeeRepository.findById(1L)).thenReturn(Optional.empty());
-
-        Optional<Employee> foundEmployee = employeeService.getEmployeeById(1L);
-
-        assertFalse(foundEmployee.isPresent());
-    }
-
     // Positive Test Case: Update employee successfully
     @Test
     public void testUpdateEmployee() {
@@ -102,18 +92,6 @@ public class EmployeeServiceTest {
         verify(employeeRepository, times(1)).save(existingEmployee);
     }
 
-    // Negative Test Case: Update employee with non-existent ID
-    @Test
-    public void testUpdateEmployeeNotFound() {
-        Employee updatedDetails = new Employee();
-        when(employeeRepository.findById(1L)).thenReturn(Optional.empty());
-
-        Optional<Employee> updatedEmployee = employeeService.updateEmployee(1L, updatedDetails);
-
-        assertFalse(updatedEmployee.isPresent());
-        verify(employeeRepository, never()).save(any(Employee.class));
-    }
-
     // Positive Test Case: Delete employee successfully
     @Test
     public void testDeleteEmployee() {
@@ -126,6 +104,28 @@ public class EmployeeServiceTest {
         verify(employeeRepository, times(1)).delete(employee);
     }
 
+    // Negative Test Case: Get employee by non-existent ID
+    @Test
+    public void testGetEmployeeByIdNotFound() {
+        when(employeeRepository.findById(1L)).thenReturn(Optional.empty());
+
+        Optional<Employee> foundEmployee = employeeService.getEmployeeById(1L);
+
+        assertFalse(foundEmployee.isPresent());
+    }
+
+    // Negative Test Case: Update employee with non-existent ID
+    @Test
+    public void testUpdateEmployeeNotFound() {
+        Employee updatedDetails = new Employee();
+        when(employeeRepository.findById(1L)).thenReturn(Optional.empty());
+
+        Optional<Employee> updatedEmployee = employeeService.updateEmployee(1L, updatedDetails);
+
+        assertFalse(updatedEmployee.isPresent());
+        verify(employeeRepository, never()).save(any(Employee.class));
+    }
+
     // Negative Test Case: Delete employee with non-existent ID
     @Test
     public void testDeleteEmployeeNotFound() {
@@ -135,5 +135,45 @@ public class EmployeeServiceTest {
 
         assertFalse(isDeleted);
         verify(employeeRepository, never()).delete(any(Employee.class));
+    }
+
+    // Edge Test Case: Save employee with null fields
+    @Test(expected = NullPointerException.class)
+    public void testSaveEmployeeWithNullFields() {
+        Employee employee = new Employee();
+        employee.setFirstName(null);
+        employee.setLastName(null);
+        employee.setEmail(null);
+        employee.setDepartment(null);
+
+        when(employeeRepository.save(employee)).thenThrow(new NullPointerException());
+
+        employeeService.saveEmployee(employee);
+    }
+
+    // Edge Test Case: Update employee with partial information
+    @Test
+    public void testUpdateEmployeeWithPartialInformation() {
+        Employee existingEmployee = new Employee();
+        existingEmployee.setFirstName("OldFirstName");
+        existingEmployee.setLastName("OldLastName");
+        existingEmployee.setEmail("old.email@example.com");
+        existingEmployee.setDepartment("OldDepartment");
+        existingEmployee.setRemainingLeaveDays(15);
+
+        Employee updatedDetails = new Employee();
+        updatedDetails.setFirstName("NewFirstName");
+
+        when(employeeRepository.findById(1L)).thenReturn(Optional.of(existingEmployee));
+        when(employeeRepository.save(existingEmployee)).thenReturn(existingEmployee);
+
+        Optional<Employee> updatedEmployee = employeeService.updateEmployee(1L, updatedDetails);
+
+        assertTrue(updatedEmployee.isPresent());
+        assertEquals("NewFirstName", updatedEmployee.get().getFirstName());
+        assertEquals("OldLastName", updatedEmployee.get().getLastName());
+        assertEquals("old.email@example.com", updatedEmployee.get().getEmail());
+        assertEquals("OldDepartment", updatedEmployee.get().getDepartment());
+        assertEquals(15, updatedEmployee.get().getRemainingLeaveDays());
     }
 }

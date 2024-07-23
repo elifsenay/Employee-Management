@@ -1,6 +1,7 @@
 package com.example.employeemanagement;
 
 import com.example.employeemanagement.controller.EmployeeController;
+import com.example.employeemanagement.exception.GlobalExceptionHandler;
 import com.example.employeemanagement.model.Employee;
 import com.example.employeemanagement.service.EmployeeService;
 import org.junit.Before;
@@ -19,7 +20,7 @@ import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -37,9 +38,12 @@ public class EmployeeControllerTest {
     @Before
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        mockMvc = MockMvcBuilders.standaloneSetup(employeeController).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(employeeController)
+                .setControllerAdvice(new GlobalExceptionHandler())
+                .build();
     }
 
+    // Positive Test Case: Verifies that adding a new employee is handled correctly
     @Test
     public void testAddEmployee() throws Exception {
         Employee employee = new Employee();
@@ -58,6 +62,7 @@ public class EmployeeControllerTest {
                 .andExpect(jsonPath("$.firstName").value("John"));
     }
 
+    // Positive Test Case: Verifies that getting an employee by ID is handled correctly
     @Test
     public void testGetEmployeeById() throws Exception {
         Employee employee = new Employee();
@@ -73,15 +78,7 @@ public class EmployeeControllerTest {
                 .andExpect(jsonPath("$.firstName").value("John"));
     }
 
-    @Test
-    public void testGetEmployeeById_Negative() throws Exception {
-        when(employeeService.getEmployeeById(anyLong())).thenReturn(Optional.empty());
-
-        mockMvc.perform(get("/api/employees/1")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
-    }
-
+    // Positive Test Case: Verifies that getting all employees is handled correctly
     @Test
     public void testGetAllEmployees() throws Exception {
         Employee employee1 = new Employee();
@@ -103,6 +100,7 @@ public class EmployeeControllerTest {
                 .andExpect(jsonPath("$[1].firstName").value("Jane"));
     }
 
+    // Positive Test Case: Verifies that deleting an employee is handled correctly
     @Test
     public void testDeleteEmployee() throws Exception {
         when(employeeService.deleteEmployee(anyLong())).thenReturn(true);
@@ -112,6 +110,17 @@ public class EmployeeControllerTest {
                 .andExpect(status().isNoContent());
     }
 
+    // Negative Test Case: Verifies that getting an employee by ID returns 404 when the employee is not found
+    @Test
+    public void testGetEmployeeById_Negative() throws Exception {
+        when(employeeService.getEmployeeById(anyLong())).thenReturn(Optional.empty());
+
+        mockMvc.perform(get("/api/employees/1")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
+
+    // Negative Test Case: Verifies that deleting an employee returns 404 when the employee is not found
     @Test
     public void testDeleteEmployee_Negative() throws Exception {
         when(employeeService.deleteEmployee(anyLong())).thenReturn(false);
@@ -120,4 +129,46 @@ public class EmployeeControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
+
+    // Negative Test Case: Verifies that deleting an already deleted employee returns 404
+    @Test
+    public void testDeleteAlreadyDeletedEmployee() throws Exception {
+        when(employeeService.deleteEmployee(anyLong())).thenReturn(false);
+
+        mockMvc.perform(delete("/api/employees/1")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
+
+    // Negative Test Case: Verifies that updating a non-existing employee returns 404
+    @Test
+    public void testUpdateNonExistingEmployee() throws Exception {
+        when(employeeService.updateEmployee(anyLong(), any(Employee.class))).thenReturn(Optional.empty());
+
+        mockMvc.perform(put("/api/employees/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"firstName\": \"John\", \"lastName\": \"Doe\", \"email\": \"john.doe@example.com\", \"department\": \"IT\"}"))
+                .andExpect(status().isNotFound());
+    }
+
+    // Edge Test Case: Verifies that adding an employee with missing fields is handled correctly
+    @Test
+    public void testAddEmployeeWithMissingFields() throws Exception {
+        mockMvc.perform(post("/api/employees")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"firstName\": \"\", \"lastName\": \"\", \"email\": \"\", \"department\": \"\"}"))
+                .andExpect(status().isBadRequest());
+    }
+
+    // Edge Test Case: Verifies that getting employees when the database is empty returns an empty list
+    @Test
+    public void testGetAllEmployeesWhenEmpty() throws Exception {
+        when(employeeService.getAllEmployees()).thenReturn(Arrays.asList());
+
+        mockMvc.perform(get("/api/employees")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isEmpty());
+    }
+
 }
