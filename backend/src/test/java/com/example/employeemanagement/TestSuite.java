@@ -10,7 +10,9 @@ import org.junit.runners.Suite;
         LeaveRequestControllerTest.class,
         LeaveRequestServiceTest.class,
         GlobalExceptionHandlerTest.class,
-        SecurityConfigTest.class
+        SecurityConfigTest.class,
+        WebConfigTest.class,
+        EmployeeControllerIntegrationTest.class,
 })
 public class TestSuite {
 }
