@@ -3,8 +3,6 @@ package com.example.employeemanagement;
 import com.example.employeemanagement.controller.LeaveRequestController;
 import com.example.employeemanagement.exception.GlobalExceptionHandler;
 import com.example.employeemanagement.model.LeaveRequest;
-import com.example.employeemanagement.repository.EmployeeRepository;
-import com.example.employeemanagement.repository.LeaveRequestRepository;
 import com.example.employeemanagement.service.LeaveRequestService;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,12 +32,6 @@ public class LeaveRequestControllerTest {
 
     @Mock
     private LeaveRequestService leaveRequestService;
-
-    @Mock
-    private LeaveRequestRepository leaveRequestRepository;
-
-    @Mock
-    private EmployeeRepository employeeRepository;
 
     @InjectMocks
     private LeaveRequestController leaveRequestController;
@@ -89,7 +81,7 @@ public class LeaveRequestControllerTest {
 
     // Positive Test Case: Retrieving all leave requests successfully
     @Test
-    public void testGetAllLeaveRequests_Positive() throws Exception {
+    public void testGetAllLeaveRequests() throws Exception {
         LeaveRequest leaveRequest1 = new LeaveRequest();
         leaveRequest1.setId(1L);
         leaveRequest1.setEmployeeId(1L);

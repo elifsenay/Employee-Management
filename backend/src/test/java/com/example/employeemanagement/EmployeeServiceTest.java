@@ -15,7 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -138,7 +138,7 @@ public class EmployeeServiceTest {
     }
 
     // Edge Test Case: Save employee with null fields
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testSaveEmployeeWithNullFields() {
         Employee employee = new Employee();
         employee.setFirstName(null);
@@ -146,9 +146,17 @@ public class EmployeeServiceTest {
         employee.setEmail(null);
         employee.setDepartment(null);
 
-        when(employeeRepository.save(employee)).thenThrow(new NullPointerException());
+        // Since the repository should handle null fields gracefully,
+        // we should not throw an exception from the repository.
+        when(employeeRepository.save(employee)).thenReturn(employee);
 
-        employeeService.saveEmployee(employee);
+        Employee savedEmployee = employeeService.saveEmployee(employee);
+
+        assertNotNull(savedEmployee);
+        assertNull(savedEmployee.getFirstName());
+        assertNull(savedEmployee.getLastName());
+        assertNull(savedEmployee.getEmail());
+        assertNull(savedEmployee.getDepartment());
     }
 
     // Edge Test Case: Update employee with partial information
@@ -176,4 +184,18 @@ public class EmployeeServiceTest {
         assertEquals("OldDepartment", updatedEmployee.get().getDepartment());
         assertEquals(15, updatedEmployee.get().getRemainingLeaveDays());
     }
+
+    // Edge Test Case: Save employee with existing email
+    @Test
+    public void testSaveEmployeeWithDuplicateEmail() {
+        Employee employee = new Employee();
+        employee.setEmail("duplicate@example.com");
+
+        doThrow(new IllegalArgumentException("Email already exists"))
+                .when(employeeRepository).save(any(Employee.class));
+
+       Exception exception  =assertThrows(IllegalArgumentException.class, () -> employeeService.saveEmployee(employee));
+       assertEquals("Email already exists" , exception.getMessage());
+    }
+
 }

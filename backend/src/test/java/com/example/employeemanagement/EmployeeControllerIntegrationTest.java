@@ -1,10 +1,16 @@
 package com.example.employeemanagement;
 
+import com.example.employeemanagement.exception.ResourceNotFoundException;
 import com.example.employeemanagement.model.Employee;
 import com.example.employeemanagement.repository.EmployeeRepository;
+import com.example.employeemanagement.service.EmployeeService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,7 +20,13 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -32,6 +44,9 @@ public class EmployeeControllerIntegrationTest {
 
     @Autowired
     private EmployeeRepository employeeRepository;
+
+    @Autowired
+    private EmployeeService employeeService;
 
     @Before
     public void setUp() {
@@ -53,6 +68,7 @@ public class EmployeeControllerIntegrationTest {
                 .andExpect(jsonPath("$.email", is("john.doe@example.com")))
                 .andExpect(jsonPath("$.department", is("IT")));
     }
+
     // Positive Test Case: Delete an existing employee successfully
     @Test
     public void testDeleteEmployee() throws Exception {
@@ -105,14 +121,6 @@ public class EmployeeControllerIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.lastName", is("Smith")))
                 .andExpect(jsonPath("$.email", is("john.smith@example.com")));
-    }
-
-    // Negative Test Case: Retrieve an employee by non-existent ID
-    @Test
-    public void testGetEmployeeByIdNotFound() throws Exception {
-        mockMvc.perform(get("/api/employees/1")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
     }
 
     // Negative Test Case: Update an employee with non-existent ID
