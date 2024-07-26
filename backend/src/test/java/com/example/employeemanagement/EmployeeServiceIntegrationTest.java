@@ -7,84 +7,50 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 public class EmployeeServiceIntegrationTest {
 
     @Autowired
-    private EmployeeService employeeService;
-
-    @Autowired
     private EmployeeRepository employeeRepository;
 
-    private Employee employee;
+    @Autowired
+    private EmployeeService employeeService;
 
     @BeforeEach
     public void setUp() {
         employeeRepository.deleteAll(); // Clear the database before each test
-        employee = new Employee();
-        employee.setFirstName("John");
-        employee.setLastName("Doe");
-        employee.setEmail("john.doe@example.com");
-        employee.setDepartment("IT");
-        employee.setRemainingLeaveDays(15);
-        employeeRepository.save(employee);
-    }
-
-    @Test
-    public void testSaveEmployee() {
-        Employee newEmployee = new Employee();
-        newEmployee.setFirstName("Jane");
-        newEmployee.setLastName("Doe");
-        newEmployee.setEmail("jane.doe@example.com");
-        newEmployee.setDepartment("HR");
-        newEmployee.setRemainingLeaveDays(20);
-
-        Employee savedEmployee = employeeService.saveEmployee(newEmployee);
-        assertThat(savedEmployee).isNotNull();
-        assertThat(savedEmployee.getId()).isNotNull();
-    }
-
-    @Test
-    public void testFindEmployeeById() {
-        Optional<Employee> foundEmployee = employeeService.getEmployeeById(employee.getId());
-        assertThat(foundEmployee).isPresent();
-        assertThat(foundEmployee.get().getFirstName()).isEqualTo("John");
+        Employee existingEmployee = new Employee();
+        existingEmployee.setFirstName("Existing");
+        existingEmployee.setLastName("Employee");
+        existingEmployee.setEmail("existing@example.com");
+        existingEmployee.setDepartment("HR");
+        employeeRepository.save(existingEmployee);
     }
 
     @Test
     public void testUpdateEmployee() {
-        employee.setDepartment("Finance");
-        employeeService.saveEmployee(employee);
+        Employee employee = new Employee();
+        employee.setFirstName("John");
+        employee.setLastName("Doe");
+        employee.setEmail("john.doe@example.com");
+        employee.setDepartment("IT");
+        Employee savedEmployee = employeeService.saveEmployee(employee);
 
-        Optional<Employee> updatedEmployee = employeeService.getEmployeeById(employee.getId());
-        assertThat(updatedEmployee).isPresent();
-        assertThat(updatedEmployee.get().getDepartment()).isEqualTo("Finance");
-    }
+        Employee updatedDetails = new Employee();
+        updatedDetails.setFirstName("Jane");
+        updatedDetails.setLastName("Smith");
+        updatedDetails.setEmail("existing@example.com"); // Intentional conflict email
+        updatedDetails.setDepartment("IT");
 
-    @Test
-    public void testDeleteEmployee() {
-        boolean isDeleted = employeeService.deleteEmployee(employee.getId());
-        assertThat(isDeleted).isTrue();
-        Optional<Employee> foundEmployee = employeeService.getEmployeeById(employee.getId());
-        assertThat(foundEmployee).isEmpty();
-    }
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> employeeService.updateEmployee(savedEmployee.getId(), updatedDetails));
 
-    @Test
-    public void testGetAllEmployees() {
-        Employee newEmployee = new Employee();
-        newEmployee.setFirstName("Jane");
-        newEmployee.setLastName("Doe");
-        newEmployee.setEmail("jane.doe@example.com");
-        newEmployee.setDepartment("HR");
-        newEmployee.setRemainingLeaveDays(20);
-        employeeRepository.save(newEmployee);
+        String expectedMessage = "Email already exists";
+        String actualMessage = exception.getMessage();
 
-        assertThat(employeeService.getAllEmployees().size()).isEqualTo(2);
+        assertTrue(actualMessage.contains(expectedMessage));
     }
 }

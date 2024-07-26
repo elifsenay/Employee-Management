@@ -7,6 +7,7 @@ import javax.persistence.Id;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.PositiveOrZero;
+import javax.validation.constraints.Size;
 
 @Entity
 public class Employee {
@@ -15,9 +16,11 @@ public class Employee {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NotBlank(message = "First name is mandatory")
+    @Size(max = 255, message = "First name must be less than 255 characters")
     private String firstName;
 
     @NotBlank(message = "Last name is mandatory")
+    @Size(max = 255, message = "Last name must be less than 255 characters")
     private String lastName;
 
     @Email(message = "Email should be valid")

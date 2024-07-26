@@ -15,8 +15,8 @@ public class EmployeeService {
     private EmployeeRepository employeeRepository;
 
     public Employee saveEmployee(Employee employee) {
-        if (employee.getRemainingLeaveDays() == 0) {
-            employee.setRemainingLeaveDays(15);
+        if (employeeRepository.findByEmail(employee.getEmail()).isPresent()) {
+            throw new IllegalArgumentException("Email already exists");
         }
         return employeeRepository.save(employee);
     }
@@ -31,6 +31,14 @@ public class EmployeeService {
 
     public Optional<Employee> updateEmployee(Long id, Employee employeeDetails) {
         return employeeRepository.findById(id).map(employee -> {
+            // Check if the new email already exists for another employee
+            if (employeeDetails.getEmail() != null &&
+                    !employee.getEmail().equals(employeeDetails.getEmail()) &&
+                    employeeRepository.existsByEmail(employeeDetails.getEmail())) {
+                throw new IllegalArgumentException("Email already exists");
+            }
+
+            // Update the employee details
             if (employeeDetails.getFirstName() != null) {
                 employee.setFirstName(employeeDetails.getFirstName());
             }
@@ -46,9 +54,12 @@ public class EmployeeService {
             if (employeeDetails.getRemainingLeaveDays() != 0) {
                 employee.setRemainingLeaveDays(employeeDetails.getRemainingLeaveDays());
             }
+
             return employeeRepository.save(employee);
         });
     }
+
+
 
 
     public boolean deleteEmployee(Long id) {

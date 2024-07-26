@@ -154,6 +154,26 @@ public class LeaveRequestServiceTest {
         assertEquals(1L, deletedLeaveRequest.getId().longValue());
     }
 
+    // Positive Test Case: Save leave request with maximum allowed leave days
+    @Test
+    public void testSaveLeaveRequestWithMaxLeaveDays() {
+        Employee employee = new Employee();
+        employee.setRemainingLeaveDays(30); // Assuming 30 allowed leave days
+        LeaveRequest leaveRequest = new LeaveRequest();
+        leaveRequest.setEmployeeId(1L);
+        leaveRequest.setStartDate(LocalDate.now());
+        leaveRequest.setEndDate(LocalDate.now().plusDays(15));
+
+        when(employeeRepository.findById(1L)).thenReturn(Optional.of(employee));
+        when(leaveRequestRepository.save(any(LeaveRequest.class))).thenReturn(leaveRequest);
+
+        LeaveRequest savedLeaveRequest = leaveRequestService.saveLeaveRequest(leaveRequest);
+
+        assertNotNull(savedLeaveRequest);
+        verify(employeeRepository, times(1)).save(employee);
+        verify(leaveRequestRepository, times(1)).save(leaveRequest);
+    }
+
     // Negative Test Case: Save leave request with insufficient leave days
     @Test
     public void testSaveLeaveRequestInsufficientLeaveDays() {
@@ -230,6 +250,91 @@ public class LeaveRequestServiceTest {
 
         boolean result = leaveRequestService.deleteLeaveRequest(1L);
         assertFalse(result);
+    }
+
+    // Negative Test Case: Save leave request where the end date is before the start date
+    @Test
+    public void testSaveLeaveRequestWithEndDateBeforeStartDate() {
+        Employee employee = new Employee();
+        employee.setRemainingLeaveDays(10);
+        LeaveRequest leaveRequest = new LeaveRequest();
+        leaveRequest.setEmployeeId(1L);
+        leaveRequest.setStartDate(LocalDate.now().plusDays(5));
+        leaveRequest.setEndDate(LocalDate.now().plusDays(2));  // End date is before start date
+
+        when(employeeRepository.findById(1L)).thenReturn(Optional.of(employee));
+
+        assertThrows(IllegalStateException.class, () -> leaveRequestService.saveLeaveRequest(leaveRequest));
+        verify(employeeRepository, never()).save(any(Employee.class));
+        verify(leaveRequestRepository, never()).save(any(LeaveRequest.class));
+    }
+
+
+    // Edge Test Case: Save leave request with null dates
+    @Test
+    public void testSaveLeaveRequestWithNullDates() {
+        LeaveRequest leaveRequest = new LeaveRequest();
+        leaveRequest.setEmployeeId(1L);
+        leaveRequest.setStartDate(null);
+        leaveRequest.setEndDate(null);
+
+        assertThrows(IllegalArgumentException.class, () -> leaveRequestService.saveLeaveRequest(leaveRequest));
+
+        verify(employeeRepository, never()).save(any(Employee.class));
+        verify(leaveRequestRepository, never()).save(any(LeaveRequest.class));
+    }
+
+
+    // Edge Test Case: Boundary condition for leave days (zero days)
+    @Test
+    public void testSaveLeaveRequestWithZeroLeaveDays() {
+        Employee employee = new Employee();
+        employee.setRemainingLeaveDays(10);
+        LeaveRequest leaveRequest = new LeaveRequest();
+        leaveRequest.setEmployeeId(1L);
+        leaveRequest.setStartDate(LocalDate.now());
+        leaveRequest.setEndDate(LocalDate.now()); // Zero days leave
+
+        when(employeeRepository.findById(1L)).thenReturn(Optional.of(employee));
+        when(leaveRequestRepository.save(any(LeaveRequest.class))).thenReturn(leaveRequest);
+
+        LeaveRequest savedLeaveRequest = leaveRequestService.saveLeaveRequest(leaveRequest);
+
+        assertNotNull(savedLeaveRequest);
+        verify(employeeRepository, times(1)).save(employee);
+        verify(leaveRequestRepository, times(1)).save(leaveRequest);
+    }
+
+    // Edge Test Case: Delete leave request with null ID
+    @Test
+    public void testDeleteLeaveRequestWithNullId() {
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> leaveRequestService.deleteLeaveRequest(null));
+        assertEquals("Leave request ID cannot be null", exception.getMessage());
+        verify(leaveRequestRepository, never()).findById(any());
+        verify(leaveRequestRepository, never()).delete(any(LeaveRequest.class));
+    }
+
+    // Edge Test Case: Save leave request with overlapping dates
+    @Test
+    public void testSaveLeaveRequestWithOverlappingDates() {
+        Employee employee = new Employee();
+        employee.setRemainingLeaveDays(10);
+
+        LeaveRequest existingRequest = new LeaveRequest();
+        existingRequest.setEmployeeId(1L);
+        existingRequest.setStartDate(LocalDate.now().plusDays(1));
+        existingRequest.setEndDate(LocalDate.now().plusDays(3));
+
+        LeaveRequest newRequest = new LeaveRequest();
+        newRequest.setEmployeeId(1L);
+        newRequest.setStartDate(LocalDate.now().plusDays(2));
+        newRequest.setEndDate(LocalDate.now().plusDays(4));
+
+        when(employeeRepository.findById(1L)).thenReturn(Optional.of(employee));
+        when(leaveRequestRepository.findByEmployeeId(1L)).thenReturn(Arrays.asList(existingRequest));
+
+        assertThrows(IllegalArgumentException.class, () -> leaveRequestService.saveLeaveRequest(newRequest));
+        verify(leaveRequestRepository, never()).save(any(LeaveRequest.class));
     }
 
 }

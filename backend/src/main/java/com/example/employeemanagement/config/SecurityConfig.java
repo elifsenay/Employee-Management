@@ -4,7 +4,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -19,13 +18,13 @@ public class SecurityConfig {
         http
                 .cors().and().csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/api/**").permitAll()
+                .antMatchers("/api/employees").authenticated()
                 .antMatchers("/admin").hasRole("USER")
-                .anyRequest().authenticated()
+                .anyRequest().permitAll()
                 .and()
-                .formLogin().permitAll()
+                .httpBasic() // Use HTTP Basic Authentication for APIs
                 .and()
-                .logout().permitAll();
+                .formLogin().disable(); // Disable form login
 
         return http.build();
     }

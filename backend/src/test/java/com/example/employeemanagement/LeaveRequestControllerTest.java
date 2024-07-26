@@ -77,8 +77,6 @@ public class LeaveRequestControllerTest {
                 .andExpect(jsonPath("$.employeeId").value(1));
     }
 
-
-
     // Positive Test Case: Retrieving all leave requests successfully
     @Test
     public void testGetAllLeaveRequests() throws Exception {
@@ -112,4 +110,5 @@ public class LeaveRequestControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
+
 }

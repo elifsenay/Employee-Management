@@ -120,6 +120,27 @@ public class EmployeeControllerTest {
                 .andExpect(status().isNotFound());
     }
 
+    // Positive Test Case: Verifies that updating an existing employee is handled correctly
+    @Test
+    public void testUpdateEmployee() throws Exception {
+        Employee updatedEmployee = new Employee();
+        updatedEmployee.setId(1L);
+        updatedEmployee.setFirstName("John");
+        updatedEmployee.setLastName("Doe");
+        updatedEmployee.setEmail("john.doe@example.com");
+        updatedEmployee.setDepartment("IT");
+
+        when(employeeService.updateEmployee(anyLong(), any(Employee.class))).thenReturn(Optional.of(updatedEmployee));
+
+        mockMvc.perform(put("/api/employees/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"firstName\": \"John\", \"lastName\": \"Doe\", \"email\": \"john.doe@example.com\", \"department\": \"IT\"}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.firstName").value("John"))
+                .andExpect(jsonPath("$.email").value("john.doe@example.com"));
+    }
+
+
     // Negative Test Case: Verifies that deleting an employee returns 404 when the employee is not found
     @Test
     public void testDeleteEmployee_Negative() throws Exception {
@@ -151,6 +172,44 @@ public class EmployeeControllerTest {
                 .andExpect(status().isNotFound());
     }
 
+    // Negative Test Case: Verifies that adding an employee with duplicate email returns 409 conflict
+    @Test
+    public void testAddEmployeeWithDuplicateEmail() throws Exception {
+        when(employeeService.saveEmployee(any(Employee.class))).thenThrow(new IllegalArgumentException("Email already exists"));
+
+        mockMvc.perform(post("/api/employees")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"firstName\": \"John\", \"lastName\": \"Doe\", \"email\": \"john.doe@example.com\", \"department\": \"IT\"}"))
+                .andExpect(status().isConflict());
+    }
+
+
+    // Negative Test Case: Verifies that getting an employee by invalid ID returns 400 bad request
+    @Test
+    public void testGetEmployeeWithInvalidId() throws Exception {
+        mockMvc.perform(get("/api/employees/invalid-id")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    // Negative Test Case: Verifies that deleting an employee by invalid ID returns 400 bad request
+    @Test
+    public void testDeleteEmployeeWithInvalidId() throws Exception {
+        mockMvc.perform(delete("/api/employees/invalid-id")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+
+    // Edge Test Case: Verifies that updating an employee with null values is handled correctly
+    @Test
+    public void testUpdateEmployeeWithNullValues() throws Exception {
+        mockMvc.perform(put("/api/employees/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"firstName\": null, \"lastName\": null, \"email\": null, \"department\": null}"))
+                .andExpect(status().isBadRequest());
+    }
+
     // Edge Test Case: Verifies that adding an employee with missing fields is handled correctly
     @Test
     public void testAddEmployeeWithMissingFields() throws Exception {
@@ -169,6 +228,35 @@ public class EmployeeControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isEmpty());
+    }
+
+    // Edge Test Case: Verifies that adding an employee with invalid email format is handled correctly
+    @Test
+    public void testAddEmployeeWithInvalidEmail() throws Exception {
+        mockMvc.perform(post("/api/employees")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"firstName\": \"John\", \"lastName\": \"Doe\", \"email\": \"invalid-email\", \"department\": \"IT\"}"))
+                .andExpect(status().isBadRequest());
+    }
+
+    // Edge Test Case: Verifies that adding an employee with too long first name is handled correctly
+    @Test
+    public void testAddEmployeeWithTooLongFirstName() throws Exception {
+        String longFirstName = "a".repeat(256); // Assuming the limit is 255 characters
+        mockMvc.perform(post("/api/employees")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"firstName\": \"" + longFirstName + "\", \"lastName\": \"Doe\", \"email\": \"john.doe@example.com\", \"department\": \"IT\"}"))
+                .andExpect(status().isBadRequest());
+    }
+
+    // Edge Test Case: Verifies that updating an employee with too long last name is handled correctly
+    @Test
+    public void testUpdateEmployeeWithTooLongLastName() throws Exception {
+        String longLastName = "a".repeat(256); // Assuming the limit is 255 characters
+        mockMvc.perform(put("/api/employees/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"firstName\": \"John\", \"lastName\": \"" + longLastName + "\", \"email\": \"john.doe@example.com\", \"department\": \"IT\"}"))
+                .andExpect(status().isBadRequest());
     }
 
 }

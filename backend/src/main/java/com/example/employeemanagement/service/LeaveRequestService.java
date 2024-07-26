@@ -25,32 +25,46 @@ public class LeaveRequestService {
     private EmployeeRepository employeeRepository;
 
     public LeaveRequest saveLeaveRequest(LeaveRequest leaveRequest) {
-        try {
-            Optional<Employee> optionalEmployee = employeeRepository.findById(leaveRequest.getEmployeeId());
-            if (optionalEmployee.isPresent()) {
-                Employee employee = optionalEmployee.get();
-                long daysBetween = ChronoUnit.DAYS.between(leaveRequest.getStartDate(), leaveRequest.getEndDate()) + 1;
+        // Check for null dates
+        if (leaveRequest.getStartDate() == null || leaveRequest.getEndDate() == null) {
+            throw new IllegalArgumentException("Start date and end date cannot be null");
+        }
 
-                // Check for invalid date range
-                if (daysBetween < 0) {
-                    throw new IllegalStateException("End date cannot be before start date");
-                }
-                leaveRequest.setLeaveDays((int) daysBetween);
-                if (employee.getRemainingLeaveDays() >= daysBetween) {
-                    employee.setRemainingLeaveDays(employee.getRemainingLeaveDays() - (int) daysBetween);
-                    employeeRepository.save(employee);
-                    return leaveRequestRepository.save(leaveRequest);
-                } else {
-                    throw new IllegalStateException("Not enough leave days available");
-                }
-            } else {
-                throw new IllegalArgumentException("Employee not found");
+        Optional<Employee> optionalEmployee = employeeRepository.findById(leaveRequest.getEmployeeId());
+
+        if (optionalEmployee.isPresent()) {
+            Employee employee = optionalEmployee.get();
+            long daysBetween = ChronoUnit.DAYS.between(leaveRequest.getStartDate(), leaveRequest.getEndDate()) + 1;
+
+            // Check for invalid date range
+            if (daysBetween < 0) {
+                throw new IllegalStateException("End date cannot be before start date");
             }
-        } catch (Exception e) {
-            logger.error("Error saving leave request", e);
-            throw e;
+
+            // Check for overlapping dates
+            List<LeaveRequest> existingRequests = leaveRequestRepository.findByEmployeeId(leaveRequest.getEmployeeId());
+            for (LeaveRequest existingRequest : existingRequests) {
+                if (!(leaveRequest.getEndDate().isBefore(existingRequest.getStartDate()) ||
+                        leaveRequest.getStartDate().isAfter(existingRequest.getEndDate()))) {
+                    throw new IllegalArgumentException("Leave request dates overlap with an existing request");
+                }
+            }
+
+            leaveRequest.setLeaveDays((int) daysBetween);
+
+            if (employee.getRemainingLeaveDays() >= daysBetween) {
+                employee.setRemainingLeaveDays(employee.getRemainingLeaveDays() - (int) daysBetween);
+                employeeRepository.save(employee);
+                return leaveRequestRepository.save(leaveRequest);
+            } else {
+                throw new IllegalStateException("Not enough leave days available");
+            }
+        } else {
+            throw new IllegalArgumentException("Employee not found");
         }
     }
+
+
 
 
     public List<LeaveRequest> getAllLeaveRequests() {
@@ -107,6 +121,10 @@ public class LeaveRequestService {
 
 
     public boolean deleteLeaveRequest(Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("Leave request ID cannot be null");
+        }
+
         try {
             return leaveRequestRepository.findById(id).map(leaveRequest -> {
                 Optional<Employee> optionalEmployee = employeeRepository.findById(leaveRequest.getEmployeeId());
@@ -127,4 +145,5 @@ public class LeaveRequestService {
             throw e;
         }
     }
+
 }
