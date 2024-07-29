@@ -42,19 +42,14 @@ public class EmployeeController {
                 throw new ResourceNotFoundException("Employee not found with id " + id);
             }
         } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("Invalid employee ID: " + id);
+            return ResponseEntity.badRequest().body(null); // Return 400 Bad Request for invalid ID
         }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Employee> updateEmployee(@PathVariable String id, @Valid @RequestBody Employee employeeDetails) {
-        try {
-            Long employeeId = Long.parseLong(id);
-            Optional<Employee> updatedEmployee = employeeService.updateEmployee(employeeId, employeeDetails);
-            return updatedEmployee.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("Invalid employee ID: " + id);
-        }
+    public ResponseEntity<Employee> updateEmployee(@PathVariable Long id, @Valid @RequestBody Employee employeeDetails) {
+        Optional<Employee> updatedEmployee = employeeService.updateEmployee(id, employeeDetails);
+        return updatedEmployee.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
@@ -67,7 +62,7 @@ public class EmployeeController {
                 return ResponseEntity.notFound().build();
             }
         } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("Invalid employee ID: " + id);
+            return ResponseEntity.badRequest().build(); // Return 400 Bad Request for invalid ID
         }
     }
 }

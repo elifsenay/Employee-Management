@@ -22,9 +22,9 @@ public class SecurityConfig {
                 .antMatchers("/admin").hasRole("USER")
                 .anyRequest().permitAll()
                 .and()
-                .httpBasic() // Use HTTP Basic Authentication for APIs
+                .httpBasic()
                 .and()
-                .formLogin().disable(); // Disable form login
+                .formLogin().disable();
 
         return http.build();
     }

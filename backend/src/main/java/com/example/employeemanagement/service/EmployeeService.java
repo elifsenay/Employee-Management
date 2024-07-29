@@ -33,7 +33,7 @@ public class EmployeeService {
         return employeeRepository.findById(id).map(employee -> {
             // Check if the new email already exists for another employee
             if (employeeDetails.getEmail() != null &&
-                    !employee.getEmail().equals(employeeDetails.getEmail()) &&
+                    (employee.getEmail() == null || !employee.getEmail().equals(employeeDetails.getEmail())) &&
                     employeeRepository.existsByEmail(employeeDetails.getEmail())) {
                 throw new IllegalArgumentException("Email already exists");
             }
@@ -58,8 +58,6 @@ public class EmployeeService {
             return employeeRepository.save(employee);
         });
     }
-
-
 
 
     public boolean deleteEmployee(Long id) {

@@ -7,13 +7,17 @@ import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.context.request.WebRequest;
 
+import javax.transaction.Transactional;
+
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
-
+@SpringBootTest
+@Transactional
 public class GlobalExceptionHandlerTest {
 
     @InjectMocks
