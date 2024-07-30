@@ -4,21 +4,40 @@
     padding: 20px;
 }
 
-.employee-list-container table {
+.employee-list-table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
 }
 
-.employee-list-container table, th, td {
+.employee-list-table, th, td {
     border: 1px solid #ddd;
 }
 
-.employee-list-container th, td {
+.employee-list-table th, td {
     padding: 10px;
-    text-align: center;
+    text-align: center; /* Center all text */
 }
 
-.employee-list-container th {
+.employee-list-table th {
     background-color: #f2f2f2;
+}
+
+.employee-list-table .action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.employee-list-table .action-buttons button {
+    padding: 5px 10px;
+    border: none;
+    background-color: #007bff; /* Blue color */
+    color: white;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.employee-list-table .action-buttons button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
 }
