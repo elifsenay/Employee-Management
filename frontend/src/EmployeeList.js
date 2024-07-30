@@ -10,7 +10,7 @@ function EmployeeList() {
     useEffect(() => {
         fetch('http://localhost:8080/api/employees', {
             headers: {
-                'Authorization': 'Basic ' + btoa('user:password') // Add your username and password
+                'Authorization': 'Basic ' + btoa('user:password')
             }
         })
             .then(response => {
@@ -27,7 +27,7 @@ function EmployeeList() {
         fetch(`http://localhost:8080/api/employees/${id}`, {
             method: 'DELETE',
             headers: {
-                'Authorization': 'Basic ' + btoa('user:password') // Add your username and password
+                'Authorization': 'Basic ' + btoa('user:password')
             }
         })
             .then(response => {
