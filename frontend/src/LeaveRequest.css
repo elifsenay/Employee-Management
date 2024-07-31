@@ -4,13 +4,14 @@
 }
 
 .leave-request-container form {
-    display: inline-block;
-    text-align: left;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     margin-bottom: 20px;
+    text-align: left;
 }
 
 .leave-request-container form label {
-    display: block;
     margin-top: 10px;
 }
 
@@ -27,6 +28,7 @@
     color: white;
     border: none;
     cursor: pointer;
+    border-radius: 4px; /* Added for rounded corners */
 }
 
 .leave-request-container form button:hover {
@@ -47,25 +49,46 @@
     border: 1px solid #ccc;
     padding: 20px;
     margin: 10px auto;
-    width: 80%;
-    max-width: 800px;
+    width: 100%;
+    max-width: 1000px;
     text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
 }
 
 .leave-requests-box table {
     width: 100%;
-    border-collapse: collapse;
+    border-collapse: collapse; /* Ensure borders are collapsed */
+    border: none; /* Remove table-level border */
 }
 
 .leave-requests-box th, td {
     padding: 10px;
-    border: 1px solid #ddd;
+    border: 1px solid #ddd; /* Ensures all cells have borders */
+    text-align: center; /* Center-align text in all table cells */
 }
 
 .leave-requests-box th {
     background-color: #f2f2f2;
 }
 
-.leave-requests-box td:nth-child(1) {
-    text-align: center;
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.action-buttons button {
+    padding: 5px 10px;
+    border: none;
+    background-color: #007bff; /* Blue color */
+    color: white;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.action-buttons button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
 }

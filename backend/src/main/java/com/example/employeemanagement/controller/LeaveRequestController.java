@@ -41,17 +41,19 @@ public class LeaveRequestController {
         return leaveRequestService.getAllLeaveRequests();
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<LeaveRequest> updateLeaveRequest(@PathVariable Long id, @RequestBody LeaveRequest leaveRequestDetails) {
+        LeaveRequest updatedLeaveRequest = leaveRequestService.updateLeaveRequest(id, leaveRequestDetails)
+                .orElseThrow(() -> new ResourceNotFoundException("LeaveRequest not found with id " + id));
+        return new ResponseEntity<>(updatedLeaveRequest, HttpStatus.OK);
+    }
 
-   /* @DeleteMapping("/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteLeaveRequest(@PathVariable Long id) {
-        logger.info("Received request to delete leave request with ID: " + id);
         boolean isDeleted = leaveRequestService.deleteLeaveRequest(id);
         if (!isDeleted) {
-            logger.warn("Leave request with ID " + id + " not found");
             throw new ResourceNotFoundException("LeaveRequest not found with id " + id);
         }
-        logger.info("Leave request with ID " + id + " deleted successfully");
         return ResponseEntity.noContent().build();
     }
-    */
 }
