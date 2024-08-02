@@ -31,14 +31,12 @@ public class EmployeeService {
 
     public Optional<Employee> updateEmployee(Long id, Employee employeeDetails) {
         return employeeRepository.findById(id).map(employee -> {
-            // Check if the new email already exists for another employee
             if (employeeDetails.getEmail() != null &&
                     (employee.getEmail() == null || !employee.getEmail().equals(employeeDetails.getEmail())) &&
                     employeeRepository.existsByEmail(employeeDetails.getEmail())) {
                 throw new IllegalArgumentException("Email already exists");
             }
 
-            // Update the employee details
             if (employeeDetails.getFirstName() != null) {
                 employee.setFirstName(employeeDetails.getFirstName());
             }
@@ -54,11 +52,16 @@ public class EmployeeService {
             if (employeeDetails.getRemainingLeaveDays() != 0) {
                 employee.setRemainingLeaveDays(employeeDetails.getRemainingLeaveDays());
             }
+            if (employeeDetails.getRole() != null) {
+                employee.setRole(employeeDetails.getRole());
+            }
+            if (employeeDetails.getPassword() != null) {
+                employee.setPassword(employeeDetails.getPassword());
+            }
 
             return employeeRepository.save(employee);
         });
     }
-
 
     public boolean deleteEmployee(Long id) {
         return employeeRepository.findById(id).map(employee -> {
