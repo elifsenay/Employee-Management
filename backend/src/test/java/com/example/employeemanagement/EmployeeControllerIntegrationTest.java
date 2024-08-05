@@ -65,7 +65,7 @@ public class EmployeeControllerIntegrationTest {
     // Positive Test Case: Delete an existing employee successfully
     @Test
     public void testDeleteEmployee() throws Exception {
-        Employee employee = new Employee("John", "Doe", "john.doe@example.com", "IT", 15, "ADMIN", "password");
+        Employee employee = new Employee("John", "Doe", "john.doe@example.com", "IT", 15);
         Employee savedEmployee = employeeRepository.save(employee);
 
         mockMvc.perform(delete("/api/employees/" + savedEmployee.getId())
@@ -76,8 +76,8 @@ public class EmployeeControllerIntegrationTest {
     // Positive Test Case: Retrieve all employees successfully
     @Test
     public void testGetAllEmployees() throws Exception {
-        Employee employee1 = new Employee("John", "Doe", "john.doe@example.com", "IT", 15, "ADMIN", "password");
-        Employee employee2 = new Employee("Jane", "Doe", "jane.doe@example.com", "HR", 15, "ADMIN", "password");
+        Employee employee1 = new Employee("John", "Doe", "john.doe@example.com", "IT", 15);
+        Employee employee2 = new Employee("Jane", "Doe", "jane.doe@example.com", "HR", 15);
         employeeRepository.save(employee1);
         employeeRepository.save(employee2);
 
@@ -91,7 +91,7 @@ public class EmployeeControllerIntegrationTest {
     // Positive Test Case: Retrieve an employee by ID successfully
     @Test
     public void testGetEmployeeById() throws Exception {
-        Employee employee = new Employee("John", "Doe", "john.doe@example.com", "IT", 15, "ADMIN", "password");
+        Employee employee = new Employee("John", "Doe", "john.doe@example.com", "IT", 15);
         Employee savedEmployee = employeeRepository.save(employee);
 
         mockMvc.perform(get("/api/employees/" + savedEmployee.getId())
@@ -103,10 +103,10 @@ public class EmployeeControllerIntegrationTest {
     // Positive Test Case: Update an existing employee successfully
     @Test
     public void testUpdateEmployee() throws Exception {
-        Employee employee = new Employee("John", "Doe", "john.doe@example.com", "IT", 15, "ADMIN", "password");
+        Employee employee = new Employee("John", "Doe", "john.doe@example.com", "IT", 15);
         Employee savedEmployee = employeeRepository.save(employee);
 
-        String updatedEmployeeJson = "{\"firstName\": \"John\", \"lastName\": \"Smith\", \"email\": \"john.smith@example.com\", \"department\": \"IT\", \"role\": \"ADMIN\"}";
+        String updatedEmployeeJson = "{\"firstName\": \"John\", \"lastName\": \"Smith\", \"email\": \"john.smith@example.com\", \"department\": \"IT\"}";
 
         mockMvc.perform(put("/api/employees/" + savedEmployee.getId())
                         .contentType(MediaType.APPLICATION_JSON)
