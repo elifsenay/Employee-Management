@@ -16,7 +16,7 @@ function EmployeeEntry() {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Basic ' + btoa('user:password'),
+                'Authorization': 'Basic ' + btoa('user:password'), // Add this line
             },
             body: JSON.stringify({ firstName, lastName, email, department }),
         })
