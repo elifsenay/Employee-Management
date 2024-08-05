@@ -50,7 +50,7 @@ public class EmployeeControllerIntegrationTest {
     // Positive Test Case: Add a new employee successfully
     @Test
     public void testAddEmployee() throws Exception {
-        String employeeJson = "{\"firstName\": \"John\", \"lastName\": \"Doe\", \"email\": \"john.doe@example.com\", \"department\": \"IT\"}";
+        String employeeJson = "{\"firstName\": \"John\", \"lastName\": \"Doe\", \"email\": \"john.doe@example.com\", \"department\": \"IT\", \"password\": \"password\"}";
 
         mockMvc.perform(post("/api/employees")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -59,13 +59,14 @@ public class EmployeeControllerIntegrationTest {
                 .andExpect(jsonPath("$.firstName", is("John")))
                 .andExpect(jsonPath("$.lastName", is("Doe")))
                 .andExpect(jsonPath("$.email", is("john.doe@example.com")))
-                .andExpect(jsonPath("$.department", is("IT")));
+                .andExpect(jsonPath("$.department", is("IT")))
+                .andExpect(jsonPath("$.password", is("password")));
     }
 
     // Positive Test Case: Delete an existing employee successfully
     @Test
     public void testDeleteEmployee() throws Exception {
-        Employee employee = new Employee("John", "Doe", "john.doe@example.com", "IT", 15);
+        Employee employee = new Employee("John", "Doe", "john.doe@example.com", "IT", 15, "password");
         Employee savedEmployee = employeeRepository.save(employee);
 
         mockMvc.perform(delete("/api/employees/" + savedEmployee.getId())
@@ -76,8 +77,8 @@ public class EmployeeControllerIntegrationTest {
     // Positive Test Case: Retrieve all employees successfully
     @Test
     public void testGetAllEmployees() throws Exception {
-        Employee employee1 = new Employee("John", "Doe", "john.doe@example.com", "IT", 15);
-        Employee employee2 = new Employee("Jane", "Doe", "jane.doe@example.com", "HR", 15);
+        Employee employee1 = new Employee("John", "Doe", "john.doe@example.com", "IT", 15, "password");
+        Employee employee2 = new Employee("Jane", "Doe", "jane.doe@example.com", "HR", 15, "password");
         employeeRepository.save(employee1);
         employeeRepository.save(employee2);
 
@@ -91,7 +92,7 @@ public class EmployeeControllerIntegrationTest {
     // Positive Test Case: Retrieve an employee by ID successfully
     @Test
     public void testGetEmployeeById() throws Exception {
-        Employee employee = new Employee("John", "Doe", "john.doe@example.com", "IT", 15);
+        Employee employee = new Employee("John", "Doe", "john.doe@example.com", "IT", 15, "password");
         Employee savedEmployee = employeeRepository.save(employee);
 
         mockMvc.perform(get("/api/employees/" + savedEmployee.getId())
@@ -103,10 +104,10 @@ public class EmployeeControllerIntegrationTest {
     // Positive Test Case: Update an existing employee successfully
     @Test
     public void testUpdateEmployee() throws Exception {
-        Employee employee = new Employee("John", "Doe", "john.doe@example.com", "IT", 15);
+        Employee employee = new Employee("John", "Doe", "john.doe@example.com", "IT", 15, "password");
         Employee savedEmployee = employeeRepository.save(employee);
 
-        String updatedEmployeeJson = "{\"firstName\": \"John\", \"lastName\": \"Smith\", \"email\": \"john.smith@example.com\", \"department\": \"IT\"}";
+        String updatedEmployeeJson = "{\"firstName\": \"John\", \"lastName\": \"Smith\", \"email\": \"john.smith@example.com\", \"department\": \"IT\", \"password\": \"password\"}";
 
         mockMvc.perform(put("/api/employees/" + savedEmployee.getId())
                         .contentType(MediaType.APPLICATION_JSON)
@@ -119,7 +120,7 @@ public class EmployeeControllerIntegrationTest {
     // Negative Test Case: Update an employee with non-existent ID
     @Test
     public void testUpdateEmployeeNotFound() throws Exception {
-        String updatedEmployeeJson = "{\"firstName\": \"John\", \"lastName\": \"Smith\", \"email\": \"john.smith@example.com\", \"department\": \"IT\"}";
+        String updatedEmployeeJson = "{\"firstName\": \"John\", \"lastName\": \"Smith\", \"email\": \"john.smith@example.com\", \"department\": \"IT\", \"password\": \"password\"}";
 
         mockMvc.perform(put("/api/employees/1")
                         .contentType(MediaType.APPLICATION_JSON)

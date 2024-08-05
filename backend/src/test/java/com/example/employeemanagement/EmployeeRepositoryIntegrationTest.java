@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -33,6 +32,7 @@ public class EmployeeRepositoryIntegrationTest {
         employee.setFirstName("John");
         employee.setLastName("Doe");
         employee.setEmail("john.doe@example.com");
+        employee.setPassword("password123"); // Add password
         employee.setDepartment("IT");
         employee.setRemainingLeaveDays(15);
         employeeRepository.save(employee);
@@ -51,6 +51,7 @@ public class EmployeeRepositoryIntegrationTest {
         newEmployee.setFirstName("Jane");
         newEmployee.setLastName("Doe");
         newEmployee.setEmail("jane.doe@example.com");
+        newEmployee.setPassword("password123"); // Add password
         newEmployee.setDepartment("HR");
         newEmployee.setRemainingLeaveDays(20);
 

@@ -33,16 +33,21 @@ public class Employee {
     @PositiveOrZero(message = "Remaining leave days must be zero or positive")
     private int remainingLeaveDays = 15; // Default value
 
+    @NotBlank(message = "Password is mandatory")
+    @Size(min = 8, message = "Password should be no less than 8 characters")
+    private String password;
+
     // Constructors, getters and setters
     public Employee() {
     }
 
-    public Employee(String firstName, String lastName, String email, String department, int remainingLeaveDays) {
+    public Employee(String firstName, String lastName, String email, String department, int remainingLeaveDays, String password) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.department = department;
         this.remainingLeaveDays = remainingLeaveDays; // Default value
+        this.password = password;
     }
 
     // Getters and Setters
@@ -93,4 +98,8 @@ public class Employee {
     public void setRemainingLeaveDays(int remainingLeaveDays) {
         this.remainingLeaveDays = remainingLeaveDays;
     }
+
+    public String getPassword() {return password;}
+
+    public void setPassword(String password) {this.password = password;}
 }
