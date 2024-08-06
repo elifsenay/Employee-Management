@@ -1,6 +1,6 @@
 // src/EmployeeEntry.js
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import './EmployeeEntry.css';
 
 function EmployeeEntry() {
@@ -8,51 +8,63 @@ function EmployeeEntry() {
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
     const [department, setDepartment] = useState('');
-    const [feedback, setFeedback] = useState('');
+    const [password, setPassword] = useState('');
+    const navigate = useNavigate();
 
     const handleSubmit = (e) => {
         e.preventDefault();
+
+        const token = localStorage.getItem('token');
+
         fetch('http://localhost:8080/api/employees', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Basic ' + btoa('user:password'), // Add this line
+                'Authorization': `Bearer ${token}`,
             },
-            body: JSON.stringify({ firstName, lastName, email, department }),
+            body: JSON.stringify({ firstName, lastName, email, department, password }),
         })
-            .then(response => response.json())
-            .then(data => {
-                setFeedback('Employee added successfully!');
-                setFirstName('');
-                setLastName('');
-                setEmail('');
-                setDepartment('');
+            .then(response => {
+                if (response.ok) {
+                    navigate('/employee-list');
+                } else {
+                    alert('Failed to add employee');
+                }
             })
-            .catch((error) => {
-                setFeedback('Error adding employee. Please try again.');
-                console.error('Error:', error);
-            });
+            .catch(error => console.error('Error:', error));
     };
 
-
     return (
-        <div className="employee-entry-container">
+        <div className="form-container">
             <h2>Add Employee</h2>
             <form onSubmit={handleSubmit}>
-                <label>First Name:</label>
-                <input type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
-                <label>Last Name:</label>
-                <input type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} />
-                <label>Email:</label>
-                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-                <label>Department:</label>
-                <input type="text" value={department} onChange={(e) => setDepartment(e.target.value)} />
-                <button type="submit">Add</button>
+                <label>
+                    First Name:
+                    <input type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
+                </label>
+                <br />
+                <label>
+                    Last Name:
+                    <input type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} />
+                </label>
+                <br />
+                <label>
+                    Email:
+                    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+                </label>
+                <br />
+                <label>
+                    Department:
+                    <input type="text" value={department} onChange={(e) => setDepartment(e.target.value)} />
+                </label>
+                <br />
+                <label>
+                    Password:
+                    <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                </label>
+                <br />
+                <button type="submit">Add Employee</button>
             </form>
-            {feedback && <p className="feedback">{feedback}</p>}
-            <p>
-                <Link to="/employee-list">Go to Employee List</Link>
-            </p>
         </div>
     );
 }

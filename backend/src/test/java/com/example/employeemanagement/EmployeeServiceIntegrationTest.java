@@ -7,8 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -26,21 +25,13 @@ public class EmployeeServiceIntegrationTest {
     @BeforeEach
     public void setUp() {
         employeeRepository.deleteAll(); // Clear the database before each test
-        Employee existingEmployee = new Employee();
-        existingEmployee.setFirstName("Existing");
-        existingEmployee.setLastName("Employee");
-        existingEmployee.setEmail("existing@example.com");
-        existingEmployee.setDepartment("HR");
+        Employee existingEmployee = new Employee("Existing", "Employee", "existing@example.com", "HR", 15, "password");
         employeeRepository.save(existingEmployee);
     }
 
     @Test
     public void testUpdateEmployee() {
-        Employee employee = new Employee();
-        employee.setFirstName("John");
-        employee.setLastName("Doe");
-        employee.setEmail("john.doe@example.com");
-        employee.setDepartment("IT");
+        Employee employee = new Employee("John", "Doe", "john.doe@example.com", "IT", 15, "password");
         Employee savedEmployee = employeeService.saveEmployee(employee);
 
         Employee updatedDetails = new Employee();

@@ -1,52 +1,35 @@
 // src/EmployeeList.js
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import './EmployeeList.css';
 
 function EmployeeList() {
     const [employees, setEmployees] = useState([]);
-    const navigate = useNavigate();
 
     useEffect(() => {
-        fetch('http://localhost:8080/api/employees', {
-            headers: {
-                'Authorization': 'Basic ' + btoa('user:password')
-            }
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
+        const fetchEmployees = async () => {
+            const token = localStorage.getItem('token');
+
+            const response = await fetch('http://localhost:8080/api/employees', {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
                 }
-                return response.json();
-            })
-            .then(data => setEmployees(data))
-            .catch(error => console.error('Error fetching employees:', error));
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                setEmployees(data);
+            } else {
+                alert('Failed to fetch employees');
+            }
+        };
+
+        fetchEmployees();
     }, []);
-
-    const handleDelete = (id) => {
-        fetch(`http://localhost:8080/api/employees/${id}`, {
-            method: 'DELETE',
-            headers: {
-                'Authorization': 'Basic ' + btoa('user:password')
-            }
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                setEmployees(employees.filter(employee => employee.id !== id));
-            })
-            .catch(error => console.error('Error deleting employee:', error));
-    };
-
-    const handleUpdate = (id) => {
-        navigate(`/update-employee/${id}`);
-    };
 
     return (
         <div className="employee-list-container">
             <h2>Employee List</h2>
-            <table className="employee-list-table">
+            <table>
                 <thead>
                 <tr>
                     <th>ID</th>
@@ -55,7 +38,6 @@ function EmployeeList() {
                     <th>Email</th>
                     <th>Department</th>
                     <th>Remaining Leave Days</th>
-                    <th>Actions</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -67,12 +49,6 @@ function EmployeeList() {
                         <td>{employee.email}</td>
                         <td>{employee.department}</td>
                         <td>{employee.remainingLeaveDays}</td>
-                        <td>
-                            <div className="action-buttons">
-                                <button onClick={() => handleUpdate(employee.id)}>Update</button>
-                                <button onClick={() => handleDelete(employee.id)}>Delete</button>
-                            </div>
-                        </td>
                     </tr>
                 ))}
                 </tbody>

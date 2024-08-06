@@ -3,6 +3,7 @@ package com.example.employeemanagement.service;
 import com.example.employeemanagement.model.Employee;
 import com.example.employeemanagement.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,13 +12,18 @@ import java.util.Optional;
 @Service
 public class EmployeeService {
 
-    @Autowired
-    private EmployeeRepository employeeRepository;
+    private final EmployeeRepository employeeRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
 
+    @Autowired
+    public EmployeeService(EmployeeRepository employeeRepository, BCryptPasswordEncoder passwordEncoder) {
+        this.employeeRepository = employeeRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
     public Employee saveEmployee(Employee employee) {
-        if (employeeRepository.findByEmail(employee.getEmail()).isPresent()) {
-            throw new IllegalArgumentException("Email already exists");
-        }
+        // Hash the password before saving
+        String hashedPassword = passwordEncoder.encode(employee.getPassword());
+        employee.setPassword(hashedPassword);
         return employeeRepository.save(employee);
     }
 
