@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import './LeaveRequest.css';
 
 function LeaveRequest() {
@@ -9,12 +9,9 @@ function LeaveRequest() {
     const [feedback, setFeedback] = useState('');
     const [leaveRequests, setLeaveRequests] = useState([]);
     const token = localStorage.getItem('token');
+    const navigate = useNavigate();
 
-    useEffect(() => {
-        fetchLeaveRequests();
-    }, []);
-
-    const fetchLeaveRequests = () => {
+    const fetchLeaveRequests = useCallback(() => {
         fetch('http://localhost:8080/api/leaverequests', {
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -24,7 +21,11 @@ function LeaveRequest() {
             .then(response => response.json())
             .then(data => setLeaveRequests(data))
             .catch(error => console.error('Error:', error));
-    };
+    }, [token]);
+
+    useEffect(() => {
+        fetchLeaveRequests();
+    }, [fetchLeaveRequests]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -59,6 +60,26 @@ function LeaveRequest() {
             });
     };
 
+    const handleDelete = async (id) => {
+        const response = await fetch(`http://localhost:8080/api/leaverequests/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            }
+        });
+
+        if (response.ok) {
+            setLeaveRequests(leaveRequests.filter(request => request.id !== id));
+        } else {
+            alert('Failed to delete leave request');
+        }
+    };
+
+    const handleUpdate = (id) => {
+        navigate(`/update-leave-request/${id}`);
+    };
+
     const formatDate = (dateString) => {
         const date = new Date(dateString);
         const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -88,6 +109,7 @@ function LeaveRequest() {
                         <th>Employee ID</th>
                         <th>Start Date</th>
                         <th>End Date</th>
+                        <th>Actions</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -96,6 +118,10 @@ function LeaveRequest() {
                             <td>{request.employeeId}</td>
                             <td>{formatDate(request.startDate)}</td>
                             <td>{formatDate(request.endDate)}</td>
+                            <td>
+                                <button onClick={() => handleUpdate(request.id)}>Update</button>
+                                <button onClick={() => handleDelete(request.id)}>Delete</button>
+                            </td>
                         </tr>
                     ))}
                     </tbody>

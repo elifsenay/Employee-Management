@@ -1,9 +1,10 @@
-// src/EmployeeList.js
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './EmployeeList.css';
 
 function EmployeeList() {
     const [employees, setEmployees] = useState([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchEmployees = async () => {
@@ -26,6 +27,27 @@ function EmployeeList() {
         fetchEmployees();
     }, []);
 
+    const handleDelete = async (id) => {
+        const token = localStorage.getItem('token');
+
+        const response = await fetch(`http://localhost:8080/api/employees/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            }
+        });
+
+        if (response.ok) {
+            setEmployees(employees.filter(employee => employee.id !== id));
+        } else {
+            alert('Failed to delete employee');
+        }
+    };
+
+    const handleUpdate = (id) => {
+        navigate(`/update-employee/${id}`);
+    };
+
     return (
         <div className="employee-list-container">
             <h2>Employee List</h2>
@@ -38,6 +60,7 @@ function EmployeeList() {
                     <th>Email</th>
                     <th>Department</th>
                     <th>Remaining Leave Days</th>
+                    <th>Actions</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -49,6 +72,10 @@ function EmployeeList() {
                         <td>{employee.email}</td>
                         <td>{employee.department}</td>
                         <td>{employee.remainingLeaveDays}</td>
+                        <td>
+                            <button onClick={() => handleUpdate(employee.id)}>Update</button>
+                            <button onClick={() => handleDelete(employee.id)}>Delete</button>
+                        </td>
                     </tr>
                 ))}
                 </tbody>
