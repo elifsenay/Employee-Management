@@ -1,6 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap');
+
 .leave-request-container {
     text-align: center;
     padding: 20px;
+    font-family: 'Roboto',Arial, sans-serif;
 }
 
 .leave-request-container form {
@@ -28,7 +31,7 @@
     color: white;
     border: none;
     cursor: pointer;
-    border-radius: 4px; /* Added for rounded corners */
+    border-radius: 4px;
 }
 
 .leave-request-container form button:hover {
@@ -60,14 +63,14 @@
 
 .leave-requests-box table {
     width: 100%;
-    border-collapse: collapse; /* Ensure borders are collapsed */
-    border: none; /* Remove table-level border */
+    border-collapse: collapse;
+    border: none;
 }
 
 .leave-requests-box th, td {
     padding: 10px;
-    border: 1px solid #ddd; /* Ensures all cells have borders */
-    text-align: center; /* Center-align text in all table cells */
+    border: 1px solid #ddd;
+    text-align: center;
 }
 
 .leave-requests-box th {
@@ -83,12 +86,12 @@
 .action-buttons button {
     padding: 5px 10px;
     border: none;
-    background-color: #007bff; /* Blue color */
+    background-color: #007bff;
     color: white;
     cursor: pointer;
     border-radius: 4px;
 }
 
 .action-buttons button:hover {
-    background-color: #0056b3; /* Darker blue on hover */
+    background-color: #0056b3;
 }

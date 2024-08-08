@@ -2,6 +2,7 @@ package com.example.employeemanagement;
 
 import com.example.employeemanagement.controller.LeaveRequestController;
 import com.example.employeemanagement.exception.GlobalExceptionHandler;
+import com.example.employeemanagement.model.Employee;
 import com.example.employeemanagement.model.LeaveRequest;
 import com.example.employeemanagement.service.LeaveRequestService;
 import org.junit.Before;
@@ -48,12 +49,11 @@ public class LeaveRequestControllerTest {
                 .build();
     }
 
-    // Positive Test Case: Adding a new leave request successfully
     @Test
     public void testAddLeaveRequest() throws Exception {
         LeaveRequest leaveRequest = new LeaveRequest();
         leaveRequest.setId(1L);
-        leaveRequest.setEmployeeId(1L);
+        leaveRequest.setEmployee(new Employee());
         leaveRequest.setStartDate(LocalDate.of(2023, 7, 1));
         leaveRequest.setEndDate(LocalDate.of(2023, 7, 10));
 
@@ -66,12 +66,11 @@ public class LeaveRequestControllerTest {
                 .andExpect(jsonPath("$.employeeId").value(1));
     }
 
-    // Positive Test Case: Retrieving an existing leave request by ID successfully
     @Test
     public void testGetLeaveRequestById() throws Exception {
         LeaveRequest leaveRequest = new LeaveRequest();
         leaveRequest.setId(1L);
-        leaveRequest.setEmployeeId(1L);
+        leaveRequest.setEmployee(new Employee());
 
         when(leaveRequestService.getLeaveRequestById(anyLong())).thenReturn(Optional.of(leaveRequest));
 
@@ -81,18 +80,17 @@ public class LeaveRequestControllerTest {
                 .andExpect(jsonPath("$.employeeId").value(1));
     }
 
-    // Positive Test Case: Retrieving all leave requests successfully
     @Test
     public void testGetAllLeaveRequests() throws Exception {
         LeaveRequest leaveRequest1 = new LeaveRequest();
         leaveRequest1.setId(1L);
-        leaveRequest1.setEmployeeId(1L);
+        leaveRequest1.setEmployee(new Employee());
         leaveRequest1.setStartDate(LocalDate.of(2023, 7, 1));
         leaveRequest1.setEndDate(LocalDate.of(2023, 7, 10));
 
         LeaveRequest leaveRequest2 = new LeaveRequest();
         leaveRequest2.setId(2L);
-        leaveRequest2.setEmployeeId(2L);
+        leaveRequest2.setEmployee(new Employee());
         leaveRequest2.setStartDate(LocalDate.of(2023, 8, 1));
         leaveRequest2.setEndDate(LocalDate.of(2023, 8, 10));
 
@@ -105,7 +103,6 @@ public class LeaveRequestControllerTest {
                 .andExpect(jsonPath("$[1].employeeId").value(2));
     }
 
-    // Negative Test Case: Retrieving a non-existent leave request by ID
     @Test
     public void testGetLeaveRequestById_Negative() throws Exception {
         when(leaveRequestService.getLeaveRequestById(anyLong())).thenReturn(Optional.empty());
@@ -114,5 +111,4 @@ public class LeaveRequestControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
-
 }

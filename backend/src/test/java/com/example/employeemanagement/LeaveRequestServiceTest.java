@@ -52,7 +52,7 @@ public class LeaveRequestServiceTest {
         Employee employee = new Employee();
         employee.setRemainingLeaveDays(10);
         LeaveRequest leaveRequest = new LeaveRequest();
-        leaveRequest.setEmployeeId(1L);
+        leaveRequest.setEmployee(employee);
         leaveRequest.setStartDate(LocalDate.now());
         leaveRequest.setEndDate(LocalDate.now().plusDays(2));
 
@@ -98,7 +98,7 @@ public class LeaveRequestServiceTest {
     public void testUpdateLeaveRequest() {
         LeaveRequest existingLeaveRequest = new LeaveRequest();
         existingLeaveRequest.setId(1L);
-        existingLeaveRequest.setEmployeeId(1L);
+        existingLeaveRequest.setEmployee(existingLeaveRequest);
         existingLeaveRequest.setStartDate(LocalDate.of(2023, 7, 1));
         existingLeaveRequest.setEndDate(LocalDate.of(2023, 7, 10));
         existingLeaveRequest.setLeaveDays(10);

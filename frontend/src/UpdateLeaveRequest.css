@@ -1,26 +1,25 @@
-/* src/EmployeeEntry.css */
+/* src/UpdateLeaveRequest.css */
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap');
 
-.employee-entry-container {
+.update-leave-request-container {
     text-align: center;
     padding: 20px;
     font-family: 'Roboto',Arial, sans-serif;
 }
 
-.employee-entry-container form {
+.update-leave-request-container form {
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: left;
 }
 
-.employee-entry-container form label {
-    display: block;
+.update-leave-request-container form label {
     margin-top: 10px;
     width: 100%;
 }
 
-.employee-entry-container form input {
+.update-leave-request-container form input {
     width: 100%;
     padding: 10px;
     margin-top: 5px;
@@ -28,7 +27,7 @@
     border-radius: 4px;
 }
 
-.employee-entry-container form button {
+.update-leave-request-container form button {
     margin-top: 20px;
     padding: 10px 20px;
     background-color: #007BFF;
@@ -39,29 +38,6 @@
     align-self: center;
 }
 
-.employee-entry-container form button:hover {
+.update-leave-request-container form button:hover {
     background-color: #0056b3;
-}
-
-.feedback {
-    margin-top: 20px;
-    font-size: 16px;
-    color: green;
-}
-
-.feedback.error {
-    color: red;
-}
-
-.employee-entry-container p {
-    margin-top: 20px;
-}
-
-.employee-entry-container a {
-    text-decoration: none;
-    color: #007BFF;
-}
-
-.employee-entry-container a:hover {
-    color: #0056b3;
 }

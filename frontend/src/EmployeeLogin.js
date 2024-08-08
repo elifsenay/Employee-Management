@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './EmployeeLogin.css';
+import showPasswordIcon from './show-password.png';
 
 function EmployeeLogin() {
     const [employeeId, setEmployeeId] = useState('');
     const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
 
     const handleSubmit = (e) => {
@@ -32,21 +34,35 @@ function EmployeeLogin() {
             });
     };
 
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    };
+
     return (
         <div className="login-container">
             <h2>Employee Login</h2>
             <form onSubmit={handleSubmit}>
                 <label>
-                    Employee ID:
+                    Employee ID
                     <input type="text" value={employeeId} onChange={(e) => setEmployeeId(e.target.value)} />
                 </label>
-                <br />
                 <label>
-                    Password:
-                    <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                    Password
+                    <div className="password-container">
+                        <input
+                            type={showPassword ? 'text' : 'password'}
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                        />
+                        <img
+                        src={showPasswordIcon}
+                        alt={"Show Password"}
+                        className="password-toggle"
+                        onClick={togglePasswordVisibility}
+                        />
+                    </div>
                 </label>
-                <br />
-                <button type="submit">Login</button>
+                <button type="submit" className="login-button">Login</button>
             </form>
         </div>
     );

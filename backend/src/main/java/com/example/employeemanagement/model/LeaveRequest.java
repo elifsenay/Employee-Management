@@ -10,8 +10,9 @@ public class LeaveRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "employee_id")
-    private Long employeeId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "employee_id")
+    private Employee employee;
 
     @Column(name = "start_date")
     private LocalDate startDate;
@@ -28,7 +29,7 @@ public class LeaveRequest {
     }
 
     public LeaveRequest(Long employeeId, LocalDate startDate, LocalDate endDate) {
-        this.employeeId = employeeId;
+        this.employee = employee;
         this.startDate = startDate;
         this.endDate = endDate;
     }
@@ -41,12 +42,12 @@ public class LeaveRequest {
         this.id = id;
     }
 
-    public Long getEmployeeId() {
-        return employeeId;
+    public Employee getEmployee() {
+        return employee;
     }
 
-    public void setEmployeeId(Long employeeId) {
-        this.employeeId = employeeId;
+    public void setEmployee(Employee employee) {
+        this.employee = employee;
     }
 
     public LocalDate getStartDate() {

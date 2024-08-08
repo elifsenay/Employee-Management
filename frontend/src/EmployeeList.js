@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './EmployeeList.css';
+import LogoutButton from "./LogoutButton";
 
 function EmployeeList() {
     const [employees, setEmployees] = useState([]);
@@ -50,6 +51,7 @@ function EmployeeList() {
 
     return (
         <div className="employee-list-container">
+            <LogoutButton/>
             <h2>Employee List</h2>
             <table>
                 <thead>

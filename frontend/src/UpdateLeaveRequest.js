@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-/*import './UpdateLeaveRequest.css';*/
+import './UpdateLeaveRequest.css';
 
 function UpdateLeaveRequest() {
     const { id } = useParams();

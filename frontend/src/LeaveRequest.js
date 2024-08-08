@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './LeaveRequest.css';
+import LogoutButton from "./LogoutButton";
 
 function LeaveRequest() {
     const [employeeId, setEmployeeId] = useState('');
@@ -90,6 +91,7 @@ function LeaveRequest() {
 
     return (
         <div className="leave-request-container">
+            <LogoutButton/>
             <h2>Add Leave Request</h2>
             <form onSubmit={handleSubmit}>
                 <label>Employee ID:</label>
