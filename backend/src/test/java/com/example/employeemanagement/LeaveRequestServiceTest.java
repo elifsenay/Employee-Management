@@ -50,9 +50,11 @@ public class LeaveRequestServiceTest {
     @Test
     public void testSaveLeaveRequest() {
         Employee employee = new Employee();
+        employee.setId(1L); // Set the ID for the employee
         employee.setRemainingLeaveDays(10);
+
         LeaveRequest leaveRequest = new LeaveRequest();
-        leaveRequest.setEmployee(employee);
+        leaveRequest.setEmployee(employee); // Set the Employee object
         leaveRequest.setStartDate(LocalDate.now());
         leaveRequest.setEndDate(LocalDate.now().plusDays(2));
 
@@ -65,6 +67,7 @@ public class LeaveRequestServiceTest {
         verify(employeeRepository, times(1)).save(employee);
         verify(leaveRequestRepository, times(1)).save(leaveRequest);
     }
+
 
     // Positive Test Case: Get leave request by ID
     @Test
@@ -98,18 +101,18 @@ public class LeaveRequestServiceTest {
     public void testUpdateLeaveRequest() {
         LeaveRequest existingLeaveRequest = new LeaveRequest();
         existingLeaveRequest.setId(1L);
-        existingLeaveRequest.setEmployee(existingLeaveRequest);
+        Employee employee = new Employee(); // Create Employee object
+        existingLeaveRequest.setEmployee(employee); // Set the Employee object
         existingLeaveRequest.setStartDate(LocalDate.of(2023, 7, 1));
         existingLeaveRequest.setEndDate(LocalDate.of(2023, 7, 10));
         existingLeaveRequest.setLeaveDays(10);
 
         LeaveRequest updatedLeaveRequest = new LeaveRequest();
-        updatedLeaveRequest.setEmployeeId(1L);
+        updatedLeaveRequest.setEmployee(existingLeaveRequest.getEmployee());  // Use the same Employee object
         updatedLeaveRequest.setStartDate(LocalDate.of(2023, 7, 5));
         updatedLeaveRequest.setEndDate(LocalDate.of(2023, 7, 15));
         updatedLeaveRequest.setLeaveDays(11);
 
-        Employee employee = new Employee();
         employee.setId(1L);
         employee.setRemainingLeaveDays(20);
 
@@ -136,10 +139,10 @@ public class LeaveRequestServiceTest {
     public void testDeleteLeaveRequest() {
         LeaveRequest leaveRequest = new LeaveRequest();
         leaveRequest.setId(1L);
-        leaveRequest.setEmployeeId(1L);
+        Employee employee = new Employee();  // Create Employee object
+        leaveRequest.setEmployee(employee); // Set the Employee object
         leaveRequest.setLeaveDays(10);
 
-        Employee employee = new Employee();
         employee.setId(1L);
         employee.setRemainingLeaveDays(10);
 
@@ -162,9 +165,11 @@ public class LeaveRequestServiceTest {
     @Test
     public void testSaveLeaveRequestWithMaxLeaveDays() {
         Employee employee = new Employee();
+        employee.setId(1L);
         employee.setRemainingLeaveDays(30); // Assuming 30 allowed leave days
+
         LeaveRequest leaveRequest = new LeaveRequest();
-        leaveRequest.setEmployeeId(1L);
+        leaveRequest.setEmployee(employee);  // Set the Employee object
         leaveRequest.setStartDate(LocalDate.now());
         leaveRequest.setEndDate(LocalDate.now().plusDays(15));
 
@@ -182,9 +187,11 @@ public class LeaveRequestServiceTest {
     @Test
     public void testSaveLeaveRequestInsufficientLeaveDays() {
         Employee employee = new Employee();
+        employee.setId(1L);
         employee.setRemainingLeaveDays(1);
+
         LeaveRequest leaveRequest = new LeaveRequest();
-        leaveRequest.setEmployeeId(1L);
+        leaveRequest.setEmployee(employee);  // Set the Employee object
         leaveRequest.setStartDate(LocalDate.now());
         leaveRequest.setEndDate(LocalDate.now().plusDays(2));
 
@@ -199,7 +206,7 @@ public class LeaveRequestServiceTest {
     @Test
     public void testSaveLeaveRequestEmployeeNotFound() {
         LeaveRequest leaveRequest = new LeaveRequest();
-        leaveRequest.setEmployeeId(1L);
+        leaveRequest.setEmployee(new Employee());  // Set a new Employee object
         leaveRequest.setStartDate(LocalDate.now());
         leaveRequest.setEndDate(LocalDate.now().plusDays(2));
 
@@ -215,19 +222,20 @@ public class LeaveRequestServiceTest {
     public void testUpdateLeaveRequestWithInvalidData() {
         LeaveRequest existingLeaveRequest = new LeaveRequest();
         existingLeaveRequest.setId(1L);
-        existingLeaveRequest.setEmployeeId(1L);
+        Employee employee = new Employee(); // Create Employee object
+        existingLeaveRequest.setEmployee(employee); // Set the Employee object
         existingLeaveRequest.setStartDate(LocalDate.of(2023, 7, 1));
         existingLeaveRequest.setEndDate(LocalDate.of(2023, 7, 10));
         existingLeaveRequest.setLeaveDays(10);
 
         LeaveRequest invalidLeaveRequest = new LeaveRequest();
-        invalidLeaveRequest.setEmployeeId(1L);
+        invalidLeaveRequest.setEmployee(existingLeaveRequest.getEmployee());  // Use the same Employee object
         invalidLeaveRequest.setStartDate(LocalDate.of(2023, 7, 10));
-        invalidLeaveRequest.setEndDate(LocalDate.of(2023, 7, 5));
-        invalidLeaveRequest.setLeaveDays(-5);
+        invalidLeaveRequest.setEndDate(LocalDate.of(2023, 7, 5));  // Invalid end date
+        invalidLeaveRequest.setLeaveDays(-5);  // Invalid leave days
 
         when(leaveRequestRepository.findById(anyLong())).thenReturn(Optional.of(existingLeaveRequest));
-        when(employeeRepository.findById(anyLong())).thenReturn(Optional.of(new Employee()));
+        when(employeeRepository.findById(anyLong())).thenReturn(Optional.of(employee));
 
         leaveRequestService.updateLeaveRequest(1L, invalidLeaveRequest);
     }
@@ -238,7 +246,7 @@ public class LeaveRequestServiceTest {
         when(leaveRequestRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         LeaveRequest updatedLeaveRequest = new LeaveRequest();
-        updatedLeaveRequest.setEmployeeId(1L);
+        updatedLeaveRequest.setEmployee(new Employee());  // Set a new Employee object
         updatedLeaveRequest.setStartDate(LocalDate.of(2023, 7, 5));
         updatedLeaveRequest.setEndDate(LocalDate.of(2023, 7, 15));
         updatedLeaveRequest.setLeaveDays(11);
@@ -260,9 +268,11 @@ public class LeaveRequestServiceTest {
     @Test
     public void testSaveLeaveRequestWithEndDateBeforeStartDate() {
         Employee employee = new Employee();
+        employee.setId(1L);
         employee.setRemainingLeaveDays(10);
+
         LeaveRequest leaveRequest = new LeaveRequest();
-        leaveRequest.setEmployeeId(1L);
+        leaveRequest.setEmployee(employee);  // Set the Employee object
         leaveRequest.setStartDate(LocalDate.now().plusDays(5));
         leaveRequest.setEndDate(LocalDate.now().plusDays(2));  // End date is before start date
 
@@ -277,8 +287,11 @@ public class LeaveRequestServiceTest {
     // Edge Test Case: Save leave request with null dates
     @Test
     public void testSaveLeaveRequestWithNullDates() {
+        Employee employee = new Employee();
+        employee.setId(1L);
+
         LeaveRequest leaveRequest = new LeaveRequest();
-        leaveRequest.setEmployeeId(1L);
+        leaveRequest.setEmployee(employee);  // Set the Employee object
         leaveRequest.setStartDate(null);
         leaveRequest.setEndDate(null);
 
@@ -293,11 +306,13 @@ public class LeaveRequestServiceTest {
     @Test
     public void testSaveLeaveRequestWithZeroLeaveDays() {
         Employee employee = new Employee();
+        employee.setId(1L);
         employee.setRemainingLeaveDays(10);
+
         LeaveRequest leaveRequest = new LeaveRequest();
-        leaveRequest.setEmployeeId(1L);
+        leaveRequest.setEmployee(employee);  // Set the Employee object
         leaveRequest.setStartDate(LocalDate.now());
-        leaveRequest.setEndDate(LocalDate.now()); // Zero days leave
+        leaveRequest.setEndDate(LocalDate.now());  // Zero days leave
 
         when(employeeRepository.findById(1L)).thenReturn(Optional.of(employee));
         when(leaveRequestRepository.save(any(LeaveRequest.class))).thenReturn(leaveRequest);
@@ -322,20 +337,21 @@ public class LeaveRequestServiceTest {
     @Test
     public void testSaveLeaveRequestWithOverlappingDates() {
         Employee employee = new Employee();
+        employee.setId(1L);
         employee.setRemainingLeaveDays(10);
 
         LeaveRequest existingRequest = new LeaveRequest();
-        existingRequest.setEmployeeId(1L);
+        existingRequest.setEmployee(employee);  // Set the Employee object
         existingRequest.setStartDate(LocalDate.now().plusDays(1));
         existingRequest.setEndDate(LocalDate.now().plusDays(3));
 
         LeaveRequest newRequest = new LeaveRequest();
-        newRequest.setEmployeeId(1L);
+        newRequest.setEmployee(employee);  // Use the same Employee object
         newRequest.setStartDate(LocalDate.now().plusDays(2));
         newRequest.setEndDate(LocalDate.now().plusDays(4));
 
         when(employeeRepository.findById(1L)).thenReturn(Optional.of(employee));
-        when(leaveRequestRepository.findByEmployeeId(1L)).thenReturn(Arrays.asList(existingRequest));
+        when(leaveRequestRepository.findByEmployee(employee)).thenReturn(Arrays.asList(existingRequest)); // Updated
 
         assertThrows(IllegalArgumentException.class, () -> leaveRequestService.saveLeaveRequest(newRequest));
         verify(leaveRequestRepository, never()).save(any(LeaveRequest.class));

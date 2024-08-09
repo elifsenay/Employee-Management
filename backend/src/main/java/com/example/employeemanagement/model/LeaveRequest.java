@@ -73,4 +73,8 @@ public class LeaveRequest {
     public void setLeaveDays(int leaveDays) {
         this.leaveDays = leaveDays;
     }
+
+    public Long getEmployeeId() {
+        return employee != null ? employee.getId() : null;
+    }
 }

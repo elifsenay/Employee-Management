@@ -1,6 +1,8 @@
 package com.example.employeemanagement;
 
+import com.example.employeemanagement.model.Employee;
 import com.example.employeemanagement.model.LeaveRequest;
+import com.example.employeemanagement.repository.EmployeeRepository;
 import com.example.employeemanagement.repository.LeaveRequestRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,12 +27,26 @@ public class LeaveRequestRepositoryIntegrationTest {
     @Autowired
     private LeaveRequestRepository leaveRequestRepository;
 
+    @Autowired
+    private EmployeeRepository employeeRepository;
+
     private LeaveRequest leaveRequest;
+    private Employee employee;
 
     @BeforeEach
     public void setUp() {
+        // Create and save an Employee
+        employee = new Employee();
+        employee.setFirstName("John");
+        employee.setLastName("Doe");
+        employee.setEmail("john.doe@example.com");
+        employee.setDepartment("Engineering");
+        employee.setRemainingLeaveDays(20);
+        employeeRepository.save(employee);
+
+        // Create and save a LeaveRequest
         leaveRequest = new LeaveRequest();
-        leaveRequest.setEmployeeId(1L);
+        leaveRequest.setEmployee(employee);  // Set the Employee object
         leaveRequest.setStartDate(LocalDate.of(2023, 7, 1));
         leaveRequest.setEndDate(LocalDate.of(2023, 7, 10));
         leaveRequest.setLeaveDays(10);
@@ -47,7 +63,7 @@ public class LeaveRequestRepositoryIntegrationTest {
     @Test
     public void testSaveLeaveRequest() {
         LeaveRequest newLeaveRequest = new LeaveRequest();
-        newLeaveRequest.setEmployeeId(1L);
+        newLeaveRequest.setEmployee(employee);  // Set the Employee object
         newLeaveRequest.setStartDate(LocalDate.of(2023, 7, 15));
         newLeaveRequest.setEndDate(LocalDate.of(2023, 7, 20));
         newLeaveRequest.setLeaveDays(6);

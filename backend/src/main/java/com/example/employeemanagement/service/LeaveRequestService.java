@@ -30,10 +30,9 @@ public class LeaveRequestService {
             throw new IllegalArgumentException("Start date and end date cannot be null");
         }
 
-        Optional<Employee> optionalEmployee = employeeRepository.findById(leaveRequest.getEmployeeId());
+        Employee employee = leaveRequest.getEmployee();
 
-        if (optionalEmployee.isPresent()) {
-            Employee employee = optionalEmployee.get();
+        if (employee != null) {
             long daysBetween = ChronoUnit.DAYS.between(leaveRequest.getStartDate(), leaveRequest.getEndDate()) + 1;
 
             // Check for invalid date range
@@ -42,7 +41,7 @@ public class LeaveRequestService {
             }
 
             // Check for overlapping dates
-            List<LeaveRequest> existingRequests = leaveRequestRepository.findByEmployeeId(leaveRequest.getEmployeeId());
+            List<LeaveRequest> existingRequests = leaveRequestRepository.findByEmployee(employee);
             for (LeaveRequest existingRequest : existingRequests) {
                 if (!(leaveRequest.getEndDate().isBefore(existingRequest.getStartDate()) ||
                         leaveRequest.getStartDate().isAfter(existingRequest.getEndDate()))) {
@@ -64,9 +63,6 @@ public class LeaveRequestService {
         }
     }
 
-
-
-
     public List<LeaveRequest> getAllLeaveRequests() {
         return leaveRequestRepository.findAll();
     }
@@ -81,11 +77,9 @@ public class LeaveRequestService {
             Optional<LeaveRequest> optionalLeaveRequest = leaveRequestRepository.findById(id);
             if (optionalLeaveRequest.isPresent()) {
                 LeaveRequest existingLeaveRequest = optionalLeaveRequest.get();
+                Employee employee = existingLeaveRequest.getEmployee();
 
-                Optional<Employee> optionalEmployee = employeeRepository.findById(existingLeaveRequest.getEmployeeId());
-                if (optionalEmployee.isPresent()) {
-                    Employee employee = optionalEmployee.get();
-
+                if (employee != null) {
                     // Rollback previous leave days
                     employee.setRemainingLeaveDays(employee.getRemainingLeaveDays() + existingLeaveRequest.getLeaveDays());
 
@@ -119,7 +113,6 @@ public class LeaveRequestService {
         }
     }
 
-
     public boolean deleteLeaveRequest(Long id) {
         if (id == null) {
             throw new IllegalArgumentException("Leave request ID cannot be null");
@@ -127,9 +120,8 @@ public class LeaveRequestService {
 
         try {
             return leaveRequestRepository.findById(id).map(leaveRequest -> {
-                Optional<Employee> optionalEmployee = employeeRepository.findById(leaveRequest.getEmployeeId());
-                if (optionalEmployee.isPresent()) {
-                    Employee employee = optionalEmployee.get();
+                Employee employee = leaveRequest.getEmployee();
+                if (employee != null) {
                     employee.setRemainingLeaveDays(employee.getRemainingLeaveDays() + leaveRequest.getLeaveDays());
                     employeeRepository.save(employee);
                 }
@@ -145,5 +137,4 @@ public class LeaveRequestService {
             throw e;
         }
     }
-
 }
