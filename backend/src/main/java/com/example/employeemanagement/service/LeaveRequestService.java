@@ -64,7 +64,7 @@ public class LeaveRequestService {
     }
 
     public List<LeaveRequest> getAllLeaveRequests() {
-        return leaveRequestRepository.findAll();
+        return leaveRequestRepository.findAllWithEmployees();
     }
 
     public Optional<LeaveRequest> getLeaveRequestById(Long id) {

@@ -1,20 +1,22 @@
 package com.example.employeemanagement.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import com.fasterxml.jackson.annotation.*;
+
+import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Employee {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @NotBlank(message = "First name is mandatory")
     @Size(max = 255, message = "First name must be less than 255 characters")
     private String firstName;
@@ -37,6 +39,10 @@ public class Employee {
     @Size(min = 8, message = "Password should be no less than 8 characters")
     private String password;
 
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private List<LeaveRequest> leaveRequests;
+
     // Constructors, getters and setters
     public Employee() {
     }
@@ -46,11 +52,10 @@ public class Employee {
         this.lastName = lastName;
         this.email = email;
         this.department = department;
-        this.remainingLeaveDays = remainingLeaveDays; // Default value
+        this.remainingLeaveDays = remainingLeaveDays;
         this.password = password;
     }
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -99,7 +104,19 @@ public class Employee {
         this.remainingLeaveDays = remainingLeaveDays;
     }
 
-    public String getPassword() {return password;}
+    public String getPassword() {
+        return password;
+    }
 
-    public void setPassword(String password) {this.password = password;}
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public List<LeaveRequest> getLeaveRequests() {
+        return leaveRequests;
+    }
+
+    public void setLeaveRequests(List<LeaveRequest> leaveRequests) {
+        this.leaveRequests = leaveRequests;
+    }
 }

@@ -14,18 +14,26 @@ function UpdateLeaveRequest() {
 
     useEffect(() => {
         const fetchLeaveRequest = async () => {
-            const response = await fetch(`http://localhost:8080/api/leaverequests/${id}`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                }
-            });
+            try {
+                const response = await fetch(`http://localhost:8080/api/leaverequests/${id}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
 
-            if (response.ok) {
-                const data = await response.json();
-                setLeaveRequest(data);
-            } else {
-                alert('Failed to fetch leave request');
+                if (response.ok) {
+                    const data = await response.json();
+                    setLeaveRequest({
+                        employeeId: data.employee ? data.employee.id : '',
+                        startDate: data.startDate ? data.startDate.split('T')[0] : '',
+                        endDate: data.endDate ? data.endDate.split('T')[0] : ''
+                    });
+                } else {
+                    alert('Failed to fetch leave request');
+                }
+            } catch (error) {
+                console.error('Error fetching leave request:', error);
             }
         };
 
@@ -35,25 +43,30 @@ function UpdateLeaveRequest() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const response = await fetch(`http://localhost:8080/api/leaverequests/${id}`, {
-            method: 'PUT',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(leaveRequest),
-        });
+        try {
+            const response = await fetch(`http://localhost:8080/api/leaverequests/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(leaveRequest),
+            });
 
-        if (response.ok) {
-            navigate('/leave-requests');
-        } else {
+            if (response.ok) {
+                navigate('/leave-requests');
+            } else {
+                alert('Failed to update leave request');
+            }
+        } catch (error) {
+            console.error('Error updating leave request:', error);
             alert('Failed to update leave request');
         }
     };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setLeaveRequest({ ...leaveRequest, [name]: value });
+        setLeaveRequest((prev) => ({ ...prev, [name]: value }));
     };
 
     return (

@@ -1,17 +1,23 @@
 package com.example.employeemanagement.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
 @Table(name = "leave_request")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class LeaveRequest {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "employee_id")
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "employee_id", nullable = false) @JsonBackReference
     private Employee employee;
 
     @Column(name = "start_date")
@@ -28,7 +34,7 @@ public class LeaveRequest {
     public LeaveRequest() {
     }
 
-    public LeaveRequest(Long employeeId, LocalDate startDate, LocalDate endDate) {
+    public LeaveRequest(Employee employee, LocalDate startDate, LocalDate endDate) {
         this.employee = employee;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -72,9 +78,5 @@ public class LeaveRequest {
 
     public void setLeaveDays(int leaveDays) {
         this.leaveDays = leaveDays;
-    }
-
-    public Long getEmployeeId() {
-        return employee != null ? employee.getId() : null;
     }
 }

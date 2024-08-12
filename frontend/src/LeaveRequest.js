@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import Select from 'react-select'; // Optional for better dropdowns
 import './LeaveRequest.css';
 import LogoutButton from "./LogoutButton";
 
 function LeaveRequest() {
-    const [employeeId, setEmployeeId] = useState('');
+    const [employee, setEmployee] = useState(null);
+    const [employees, setEmployees] = useState([]);
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const [feedback, setFeedback] = useState('');
@@ -12,16 +14,38 @@ function LeaveRequest() {
     const token = localStorage.getItem('token');
     const navigate = useNavigate();
 
+    // Fetch employees
+    useEffect(() => {
+        fetch('http://localhost:8080/api/employees', {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            }
+        })
+            .then(response => response.json())
+            .then(data => setEmployees(data))
+            .catch(error => console.error('Error fetching employees:', error));
+    }, [token]);
+
     const fetchLeaveRequests = useCallback(() => {
         fetch('http://localhost:8080/api/leaverequests', {
             headers: {
                 'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
             }
         })
-            .then(response => response.json())
-            .then(data => setLeaveRequests(data))
-            .catch(error => console.error('Error:', error));
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log(data); // Log the entire response to inspect it
+                setLeaveRequests(data);
+            })
+            .catch(error => {
+                console.error('Error fetching leave requests:', error);
+                setLeaveRequests([]); // Set to an empty array or handle the error as needed
+            });
     }, [token]);
 
     useEffect(() => {
@@ -30,6 +54,11 @@ function LeaveRequest() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        if (!employee) {
+            setFeedback('Please select an employee.');
+            return;
+        }
+
         fetch('http://localhost:8080/api/leaverequests', {
             method: 'POST',
             headers: {
@@ -37,7 +66,7 @@ function LeaveRequest() {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                employeeId: Number(employeeId),
+                employee: employee.value, // Use the selected employee object
                 startDate: new Date(startDate).toISOString().split('T')[0],
                 endDate: new Date(endDate).toISOString().split('T')[0]
             }),
@@ -50,7 +79,7 @@ function LeaveRequest() {
             })
             .then(() => {
                 setFeedback('Leave request added successfully!');
-                setEmployeeId('');
+                setEmployee(null);
                 setStartDate('');
                 setEndDate('');
                 fetchLeaveRequests(); // Refresh the list after adding
@@ -89,13 +118,23 @@ function LeaveRequest() {
         return `${month}/${day}/${year}`;
     };
 
+    console.log(leaveRequests);
+
     return (
         <div className="leave-request-container">
             <LogoutButton/>
             <h2>Add Leave Request</h2>
             <form onSubmit={handleSubmit}>
-                <label>Employee ID:</label>
-                <input type="text" value={employeeId} onChange={(e) => setEmployeeId(e.target.value)} />
+                <label>Employee:</label>
+                <Select
+                    value={employee}
+                    onChange={(selectedOption) => setEmployee(selectedOption)}
+                    options={employees.map(emp => ({
+                        value: emp,
+                        label: `${emp.firstName} ${emp.lastName} (ID: ${emp.id})`
+                    }))}
+                    placeholder="Select an employee"
+                />
                 <label>Start Date:</label>
                 <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
                 <label>End Date:</label>
@@ -108,7 +147,7 @@ function LeaveRequest() {
                 <table>
                     <thead>
                     <tr>
-                        <th>Employee ID</th>
+                        <th>Employee</th>
                         <th>Start Date</th>
                         <th>End Date</th>
                         <th>Actions</th>
@@ -117,7 +156,12 @@ function LeaveRequest() {
                     <tbody>
                     {leaveRequests.map(request => (
                         <tr key={request.id}>
-                            <td>{request.employeeId}</td>
+                            <td>
+                                {request.employee ?
+                                    `${request.employee.firstName} ${request.employee.lastName}` :
+                                    `Employee ID: ${request.employee.id || 'Unknown Employee'}`
+                                }
+                            </td>
                             <td>{formatDate(request.startDate)}</td>
                             <td>{formatDate(request.endDate)}</td>
                             <td>
