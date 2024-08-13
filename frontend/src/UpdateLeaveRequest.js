@@ -5,7 +5,9 @@ import './UpdateLeaveRequest.css';
 function UpdateLeaveRequest() {
     const { id } = useParams();
     const [leaveRequest, setLeaveRequest] = useState({
-        employeeId: '',
+        employee: {
+            id: ''
+        },
         startDate: '',
         endDate: ''
     });
@@ -25,7 +27,7 @@ function UpdateLeaveRequest() {
                 if (response.ok) {
                     const data = await response.json();
                     setLeaveRequest({
-                        employeeId: data.employee ? data.employee.id : '',
+                        employee: { id: data.employee ? data.employee.id : '' },
                         startDate: data.startDate ? data.startDate.split('T')[0] : '',
                         endDate: data.endDate ? data.endDate.split('T')[0] : ''
                     });
@@ -66,7 +68,12 @@ function UpdateLeaveRequest() {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setLeaveRequest((prev) => ({ ...prev, [name]: value }));
+        setLeaveRequest((prev) => {
+            if (name === 'employeeId') {
+                return { ...prev, employee: { ...prev.employee, id: value } };
+            }
+            return { ...prev, [name]: value };
+        });
     };
 
     return (
@@ -78,7 +85,7 @@ function UpdateLeaveRequest() {
                     <input
                         type="text"
                         name="employeeId"
-                        value={leaveRequest.employeeId}
+                        value={leaveRequest.employee.id}
                         onChange={handleChange}
                         readOnly
                     />

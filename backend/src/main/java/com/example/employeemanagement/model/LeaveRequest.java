@@ -1,11 +1,11 @@
 package com.example.employeemanagement.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 @Entity
 @Table(name = "leave_request")
@@ -17,29 +17,35 @@ public class LeaveRequest {
     private Long id;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "employee_id", nullable = false) @JsonBackReference
+    @JoinColumn(name = "employee_id", nullable = false)
+    @JsonIgnoreProperties({"leaveRequests", "password", "remainingLeaveDays"})
     private Employee employee;
 
     @Column(name = "start_date")
+    @NotNull(message = "Start date is required")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate startDate;
 
     @Column(name = "end_date")
+    @NotNull(message = "End date is required")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate endDate;
 
     @Column(name = "leave_days")
     private int leaveDays;
 
-    // Constructors, getters and setters
+    // Constructors, getters, and setters
 
-    public LeaveRequest() {
-    }
+    public LeaveRequest() {}
 
     public LeaveRequest(Employee employee, LocalDate startDate, LocalDate endDate) {
         this.employee = employee;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.leaveDays = (int) ChronoUnit.DAYS.between(startDate, endDate) + 1;
     }
 
+    // Getter and setter methods
     public Long getId() {
         return id;
     }
@@ -62,6 +68,7 @@ public class LeaveRequest {
 
     public void setStartDate(LocalDate startDate) {
         this.startDate = startDate;
+        this.leaveDays = (int) ChronoUnit.DAYS.between(startDate, this.endDate) + 1;
     }
 
     public LocalDate getEndDate() {
@@ -70,6 +77,7 @@ public class LeaveRequest {
 
     public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
+        this.leaveDays = (int) ChronoUnit.DAYS.between(this.startDate, endDate) + 1;
     }
 
     public int getLeaveDays() {

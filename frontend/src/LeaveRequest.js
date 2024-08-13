@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import Select from 'react-select'; // Optional for better dropdowns
+import Select from 'react-select';
 import './LeaveRequest.css';
 import LogoutButton from "./LogoutButton";
 
@@ -54,26 +54,54 @@ function LeaveRequest() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+
+        // Ensure an employee is selected
         if (!employee) {
             setFeedback('Please select an employee.');
             return;
         }
 
+        let startDateObj, endDateObj;
+
+// If startDate is a string, convert it to a Date object
+        if (typeof startDate === 'string' || startDate instanceof String) {
+            startDateObj = new Date(startDate);
+        } else {
+            startDateObj = startDate;
+        }
+
+// If endDate is a string, convert it to a Date object
+        if (typeof endDate === 'string' || endDate instanceof String) {
+            endDateObj = new Date(endDate);
+        } else {
+            endDateObj = endDate;
+        }
+
+// Now format the dates
+        const formattedStartDate = startDateObj.toISOString().split('T')[0];
+        const formattedEndDate = endDateObj.toISOString().split('T')[0];
+
+        console.log("Formatted Start Date:", formattedStartDate);
+        console.log("Formatted End Date:", formattedEndDate);
+        // Create the request payload
+        const leaveRequestPayload = {
+            employee: { id: employee.value.id },  // Send only the ID
+            startDate: formattedStartDate,
+            endDate: formattedEndDate
+        };
+
+        // Make the POST request to the backend API
         fetch('http://localhost:8080/api/leaverequests', {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({
-                employee: employee.value, // Use the selected employee object
-                startDate: new Date(startDate).toISOString().split('T')[0],
-                endDate: new Date(endDate).toISOString().split('T')[0]
-            }),
+            body: JSON.stringify(leaveRequestPayload),
         })
             .then(response => {
                 if (!response.ok) {
-                    return response.json().then(err => { throw new Error(err.message) });
+                    return response.json().then(err => { throw new Error(err.message); });
                 }
                 return response.json();
             })
@@ -89,6 +117,7 @@ function LeaveRequest() {
                 console.error('Error:', error);
             });
     };
+
 
     const handleDelete = async (id) => {
         const response = await fetch(`http://localhost:8080/api/leaverequests/${id}`, {
@@ -118,11 +147,9 @@ function LeaveRequest() {
         return `${month}/${day}/${year}`;
     };
 
-    console.log(leaveRequests);
-
     return (
         <div className="leave-request-container">
-            <LogoutButton/>
+            <LogoutButton />
             <h2>Add Leave Request</h2>
             <form onSubmit={handleSubmit}>
                 <label>Employee:</label>
@@ -159,7 +186,7 @@ function LeaveRequest() {
                             <td>
                                 {request.employee ?
                                     `${request.employee.firstName} ${request.employee.lastName}` :
-                                    `Employee ID: ${request.employee.id || 'Unknown Employee'}`
+                                    `Employee ID: ${request.employee ? request.employee.id : 'Unknown Employee'}`
                                 }
                             </td>
                             <td>{formatDate(request.startDate)}</td>
