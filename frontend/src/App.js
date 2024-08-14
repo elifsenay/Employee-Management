@@ -8,6 +8,7 @@ import UpdateEmployee from './UpdateEmployee';
 import UpdateLeaveRequest from './UpdateLeaveRequest';
 import EmployeeLogin from './EmployeeLogin';
 import './App.css';
+import LeaveRequestsList from "./LeaveRequestsList";
 
 function App() {
     return (
@@ -21,6 +22,7 @@ function App() {
                     <Route path="/leave-requests" element={<LeaveRequest />} />
                     <Route path="/update-employee/:id" element={<UpdateEmployee />} />
                     <Route path="/update-leave-request/:id" element={<UpdateLeaveRequest />} />
+                    <Route path="/leave-requests-list" element={<LeaveRequestsList />} />
                 </Routes>
             </div>
         </Router>

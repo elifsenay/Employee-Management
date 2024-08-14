@@ -1,103 +1,124 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import './EmployeeEntry.css';
+import './UpdateEmployee.css';
 
 function UpdateEmployee() {
     const { id } = useParams();
-    const navigate = useNavigate();
     const [employee, setEmployee] = useState({
         firstName: '',
         lastName: '',
         email: '',
-        department: '',
-        remainingLeaveDays: 0,
-        password: '',
+        department: ''
     });
+    const token = localStorage.getItem('token');
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchEmployee = async () => {
-            const token = localStorage.getItem('token');
+            try {
+                const response = await fetch(`http://localhost:8080/api/employees/${id}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
 
-            const response = await fetch(`http://localhost:8080/api/employees/${id}`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`,
+                if (response.ok) {
+                    const data = await response.json();
+                    setEmployee({
+                        firstName: data.firstName || '',
+                        lastName: data.lastName || '',
+                        email: data.email || '',
+                        department: data.department || ''
+                    });
+                } else {
+                    alert('Failed to fetch employee details');
                 }
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                setEmployee(data);
-            } else {
-                alert('Failed to fetch employee');
+            } catch (error) {
+                console.error('Error fetching employee details:', error);
             }
         };
 
         fetchEmployee();
-    }, [id]);
+    }, [id, token]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setEmployee((prevState) => ({
-            ...prevState,
-            [name]: value,
+        setEmployee((prevEmployee) => ({
+            ...prevEmployee,
+            [name]: value
         }));
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const token = localStorage.getItem('token');
 
-        const response = await fetch(`http://localhost:8080/api/employees/${id}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`,
-            },
-            body: JSON.stringify(employee),
-        });
+        try {
+            const response = await fetch(`http://localhost:8080/api/employees/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(employee),
+            });
 
-        if (response.ok) {
-            navigate('/employee-list');
-        } else {
-            alert('Failed to update employee');
+            if (response.ok) {
+                navigate('/employee-list');
+            } else {
+                alert('Failed to update employee details');
+            }
+        } catch (error) {
+            console.error('Error updating employee details:', error);
+            alert('Failed to update employee details');
         }
     };
 
     return (
-        <div className="employee-entry-container">
+        <div className="update-employee-container">
             <h2>Update Employee</h2>
             <form onSubmit={handleSubmit}>
                 <label>
                     First Name:
-                    <input type="text" name="firstName" value={employee.firstName} onChange={handleChange} />
+                    <input
+                        type="text"
+                        name="firstName"
+                        value={employee.firstName}
+                        onChange={handleChange}
+                    />
                 </label>
                 <br />
                 <label>
                     Last Name:
-                    <input type="text" name="lastName" value={employee.lastName} onChange={handleChange} />
+                    <input
+                        type="text"
+                        name="lastName"
+                        value={employee.lastName}
+                        onChange={handleChange}
+                    />
                 </label>
                 <br />
                 <label>
                     Email:
-                    <input type="email" name="email" value={employee.email} onChange={handleChange} />
+                    <input
+                        type="email"
+                        name="email"
+                        value={employee.email}
+                        onChange={handleChange}
+                    />
                 </label>
                 <br />
                 <label>
                     Department:
-                    <input type="text" name="department" value={employee.department} onChange={handleChange} />
+                    <input
+                        type="text"
+                        name="department"
+                        value={employee.department}
+                        onChange={handleChange}
+                    />
                 </label>
                 <br />
-                <label>
-                    Remaining Leave Days:
-                    <input type="number" name="remainingLeaveDays" value={employee.remainingLeaveDays} onChange={handleChange} />
-                </label>
-                <br />
-                <label>
-                    Password:
-                    <input type="password" name="password" value={employee.password} onChange={handleChange} />
-                </label>
-                <br />
-                <button type="submit">Update Employee</button>
+                <button type="submit">Update</button>
             </form>
         </div>
     );

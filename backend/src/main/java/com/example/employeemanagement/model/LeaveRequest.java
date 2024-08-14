@@ -1,6 +1,9 @@
 package com.example.employeemanagement.model;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -35,7 +38,6 @@ public class LeaveRequest {
     private int leaveDays;
 
     // Constructors, getters, and setters
-
     public LeaveRequest() {}
 
     public LeaveRequest(Employee employee, LocalDate startDate, LocalDate endDate) {
@@ -45,7 +47,6 @@ public class LeaveRequest {
         this.leaveDays = (int) ChronoUnit.DAYS.between(startDate, endDate) + 1;
     }
 
-    // Getter and setter methods
     public Long getId() {
         return id;
     }

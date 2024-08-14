@@ -37,7 +37,6 @@ public class Employee {
 
     @NotBlank(message = "Password is mandatory")
     @Size(min = 8, message = "Password should be no less than 8 characters")
-    @JsonIgnore
     private String password;
 
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

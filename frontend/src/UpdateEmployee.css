@@ -1,25 +1,25 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap');
 
-.employee-entry-container {
+.update-employee-container {
     text-align: center;
     padding: 20px;
     font-family: 'Roboto', Arial, sans-serif;
 }
 
-.employee-entry-container form {
+.update-employee-container form {
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: left;
 }
 
-.employee-entry-container form label {
+.update-employee-container form label {
     display: block;
     margin-top: 10px;
     width: 100%;
 }
 
-.employee-entry-container form input {
+.update-employee-container form input {
     width: 100%;
     padding: 10px;
     margin-top: 5px;
@@ -27,7 +27,7 @@
     border-radius: 4px;
 }
 
-.employee-entry-container form button {
+.update-employee-container form button {
     margin-top: 20px;
     padding: 10px 20px;
     background-color: #007BFF;
@@ -38,22 +38,7 @@
     align-self: center;
 }
 
-.employee-entry-container form button:hover {
-    background-color: #0056b3;
-}
-
-.go-to-list-button {
-    margin-top: 40px; /* Add some space below the "Add Employee" button */
-    padding: 10px 20px;
-    background-color: #007BFF;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    align-self: center;
-}
-
-.go-to-list-button:hover {
+.update-employee-container form button:hover {
     background-color: #0056b3;
 }
 
@@ -67,15 +52,15 @@
     color: red;
 }
 
-.employee-entry-container p {
+.update-employee-container p {
     margin-top: 20px;
 }
 
-.employee-entry-container a {
+.update-employee-container a {
     text-decoration: none;
     color: #007BFF;
 }
 
-.employee-entry-container a:hover {
+.update-employee-container a:hover {
     color: #0056b3;
 }

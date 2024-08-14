@@ -1,4 +1,3 @@
-// src/EmployeeEntry.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './EmployeeEntry.css';
@@ -9,13 +8,29 @@ function EmployeeEntry() {
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
     const [department, setDepartment] = useState('');
-    const [password, setPassword] = useState('');
+    const [password, setPassword] = useState(''); // Ensure password state is managed
     const navigate = useNavigate();
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
+        // Ensure all fields are filled, including password
+        if (!firstName || !lastName || !email || !department || !password) {
+            alert("All fields, including password, must be filled out");
+            return;
+        }
+
+        const employeeData = {
+            firstName,
+            lastName,
+            email,
+            department,
+            password // Ensure this is not empty
+        };
+
         const token = localStorage.getItem('token');
+        console.log('Employee Data:', employeeData); // Log the payload to be sent
+
 
         fetch('http://localhost:8080/api/employees', {
             method: 'POST',
@@ -23,16 +38,22 @@ function EmployeeEntry() {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`,
             },
-            body: JSON.stringify({ firstName, lastName, email, department, password }),
+            body: JSON.stringify(employeeData),
         })
             .then(response => {
                 if (response.ok) {
                     navigate('/employee-list');
                 } else {
-                    alert('Failed to add employee');
+                    return response.json().then(errorData => {
+                        console.error('Error adding employee:', errorData);
+                        alert('Failed to add employee: ' + JSON.stringify(errorData));
+                    });
                 }
             })
-            .catch(error => console.error('Error:', error));
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to add employee: ' + error.message);
+            });
     };
 
     return (
