@@ -1,28 +1,25 @@
+/* src/Home.css */
 .home-container {
     text-align: center;
     padding: 20px;
-    font-family: 'Roboto', Arial, sans-serif;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    height: 100vh;
 }
 
-.home-container h1 {
-    font-size: 36px;
-    color: #333333;
-    margin-bottom: 40px;
+.home-container nav ul {
+    list-style: none;
+    padding: 0;
 }
 
-.home-container a {
+.home-container nav ul li {
+    display: inline;
+    margin: 0 10px;
+}
+
+.home-container nav ul li a {
     text-decoration: none;
     color: #007BFF;
     font-weight: bold;
-    margin: 0 15px;
-    font-size: 18px;
-    display: inline-block;
 }
 
-.home-container a:hover {
+.home-container nav ul li a:hover {
     color: #0056b3;
 }
