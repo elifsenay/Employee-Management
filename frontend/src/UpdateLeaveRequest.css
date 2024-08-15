@@ -1,43 +1,45 @@
+/* src/UpdateLeaveRequest.css */
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap');
 
-.leave-request-container {
+.update-leave-request-container {
     text-align: center;
     padding: 20px;
     font-family: 'Roboto', Arial, sans-serif;
 }
 
-.leave-request-container form {
+.update-leave-request-container form {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-bottom: 20px;
     text-align: left;
 }
 
-.leave-request-container form label {
+.update-leave-request-container form label {
+    display: block;
     margin-top: 10px;
+    width: 100%;
 }
 
-.leave-request-container form input,
-.leave-request-container form select {
+.update-leave-request-container form input {
     width: 100%;
-    padding: 8px;
+    padding: 10px;
     margin-top: 5px;
     border: 1px solid #ccc;
     border-radius: 4px;
 }
 
-.leave-request-container form button {
+.update-leave-request-container form button {
     margin-top: 20px;
     padding: 10px 20px;
     background-color: #007BFF;
     color: white;
     border: none;
-    cursor: pointer;
     border-radius: 4px;
+    cursor: pointer;
+    align-self: center;
 }
 
-.leave-request-container form button:hover {
+.update-leave-request-container form button:hover {
     background-color: #0056b3;
 }
 
@@ -51,30 +53,15 @@
     color: red;
 }
 
-<<<<<<< Updated upstream
-.leave-request-container p {
+.update-leave-request-container p {
     margin-top: 20px;
 }
 
-.leave-request-container a {
+.update-leave-request-container a {
     text-decoration: none;
     color: #007BFF;
 }
 
-.leave-request-container a:hover {
+.update-leave-request-container a:hover {
     color: #0056b3;
-=======
-.view-requests-button {
-    margin-top: 20px;
-    padding: 10px 20px;
-    background-color: #007BFF;
-    color: white;
-    text-decoration: none;
-    border-radius: 4px;
-    display: inline-block;
-}
-
-.view-requests-button:hover {
-    background-color: #0056b3;
->>>>>>> Stashed changes
 }

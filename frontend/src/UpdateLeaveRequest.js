@@ -1,17 +1,33 @@
 import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
-import './LeaveRequest.css';
-import LogoutButton from "./LogoutButton";
+import { useNavigate, useParams } from 'react-router-dom';
+import './UpdateLeaveRequest.css';
 
-function LeaveRequest() {
+function UpdateLeaveRequest() {
+    const { id } = useParams();
     const [employee, setEmployee] = useState(null);
     const [employees, setEmployees] = useState([]);
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const [feedback, setFeedback] = useState('');
     const token = localStorage.getItem('token');
+    const navigate = useNavigate();
 
-    // Fetch employees
+    useEffect(() => {
+        fetch('http://localhost:8080/api/leaverequests/' + id, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                setEmployee({ value: data.employee, label: `${data.employee.firstName} ${data.employee.lastName} (ID: ${data.employee.id})` });
+                setStartDate(data.startDate);
+                setEndDate(data.endDate);
+            })
+            .catch(error => console.error('Error fetching leave request:', error));
+    }, [id, token]);
+
     useEffect(() => {
         fetch('http://localhost:8080/api/employees', {
             headers: {
@@ -31,14 +47,17 @@ function LeaveRequest() {
             return;
         }
 
+        const startDateObj = new Date(startDate);
+        const endDateObj = new Date(endDate);
+
         const leaveRequestPayload = {
             employee: { id: employee.value.id },
-            startDate,
-            endDate
+            startDate: startDateObj.toISOString().split('T')[0],
+            endDate: endDateObj.toISOString().split('T')[0]
         };
 
-        fetch('http://localhost:8080/api/leaverequests', {
-            method: 'POST',
+        fetch('http://localhost:8080/api/leaverequests/' + id, {
+            method: 'PUT',
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json',
@@ -49,21 +68,18 @@ function LeaveRequest() {
                 if (!response.ok) {
                     return response.json().then(err => { throw new Error(err.message); });
                 }
-                setFeedback('Leave request added successfully!');
-                setEmployee(null);
-                setStartDate('');
-                setEndDate('');
+                setFeedback('Leave request updated successfully!');
+                navigate('/leave-requests-list');
             })
             .catch(error => {
-                setFeedback(`Error adding leave request: ${error.message}`);
+                setFeedback(`Error updating leave request: ${error.message}`);
                 console.error('Error:', error);
             });
     };
 
     return (
-        <div className="leave-request-container">
-            <LogoutButton />
-            <h2>Add Leave Request</h2>
+        <div className="update-leave-request-container">
+            <h2>Update Leave Request</h2>
             <form onSubmit={handleSubmit}>
                 <label>Employee:</label>
                 <Select
@@ -79,11 +95,11 @@ function LeaveRequest() {
                 <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
                 <label>End Date:</label>
                 <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
-                <button type="submit">Add</button>
+                <button type="submit">Update</button>
             </form>
             {feedback && <p className="feedback">{feedback}</p>}
         </div>
     );
 }
 
-export default LeaveRequest;
+export default UpdateLeaveRequest;

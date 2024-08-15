@@ -1,43 +1,92 @@
-/* src/EmployeeList.css */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap');
+
 .employee-list-container {
-    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
     padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    font-family: 'Roboto', Arial, sans-serif;
 }
 
-.employee-list-table {
+.employee-list-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 24px;
+}
+
+.employee-list-box {
+    margin-top: 20px;
+    border-collapse: collapse;
+    width: 100%;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.employee-list-box table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 20px;
 }
 
-.employee-list-table, th, td {
-    border: 1px solid #ddd;
+.employee-list-box th,
+.employee-list-box td {
+    text-align: left;
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
 }
 
-.employee-list-table th, td {
-    padding: 10px;
-    text-align: center; /* Center all text */
+.employee-list-box th {
+    background-color: #007BFF;
+    color: white;
+    text-align: center;
 }
 
-.employee-list-table th {
-    background-color: #f2f2f2;
+.employee-list-box tr:hover {
+    background-color: #f5f5f5;
 }
 
-.employee-list-table .action-buttons {
+.employee-list-box td {
+    color: #555;
+    text-align: center;
+}
+
+.action-buttons {
     display: flex;
     justify-content: center;
     gap: 10px;
 }
 
-.employee-list-table .action-buttons button {
-    padding: 5px 10px;
-    border: none;
-    background-color: #007bff; /* Blue color */
+.action-buttons button {
+    padding: 6px 12px;
     color: white;
-    cursor: pointer;
+    background-color: #007BFF;
+    border: none;
     border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
 }
 
-.employee-list-table .action-buttons button:hover {
-    background-color: #0056b3; /* Darker blue on hover */
+.action-buttons button:hover {
+    background-color: #0056b3;
+}
+
+.delete-button {
+    background-color: #f44336;
+}
+
+.delete-button:hover {
+    background-color: #e53935;
+}
+
+.update-button {
+    background-color: #2196F3;
+}
+
+.update-button:hover {
+    background-color: #1e88e5;
 }
