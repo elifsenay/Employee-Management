@@ -6,7 +6,11 @@ import EmployeeEntry from './EmployeeEntry';
 import EmployeeList from './EmployeeList';
 import LeaveRequest from './LeaveRequest';
 import EmployeeLogin from "./EmployeeLogin";
+import UpdateEmployee from './UpdateEmployee';
+import LeaveRequestsList from './LeaveRequestsList';
+import UpdateLeaveRequest from "./UpdateLeaveRequest";
 import './App.css';
+
 
 function App() {
     return (
@@ -19,6 +23,10 @@ function App() {
                     <Route path="/employee-entry" element={<EmployeeEntry />} />
                     <Route path="/employee-list" element={<EmployeeList />} />
                     <Route path="/leave-requests" element={<LeaveRequest />} />
+                    <Route path="/update-employee/:id" element={<UpdateEmployee />} />
+                    <Route path="/leave-requests-list" element={<LeaveRequestsList />} />
+                    <Route path="/update-leave-request/:id" element={<UpdateLeaveRequest />} />
+
                 </Routes>
             </div>
         </Router>

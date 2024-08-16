@@ -1,48 +1,64 @@
-/* src/EmployeeLogin.css */
 .login-container {
-    text-align: center;
-    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
 }
 
-.login-container form {
-    display: inline-block;
-    text-align: left;
-    margin-top: 20px;
+h2 {
+    margin-bottom: 30px;
+    font-size: 2rem;
 }
 
-.login-container form label {
-    display: block;
-    margin-top: 10px;
+.input-container {
+    margin-bottom: 20px;
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    margin-bottom: 5px;
     font-weight: bold;
 }
 
-.login-container form input {
+input {
     width: 100%;
-    padding: 8px;
-    margin-top: 5px;
-    box-sizing: border-box;
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
 }
 
-.login-container form button {
-    margin-top: 20px;
-    padding: 10px 20px;
-    background-color: #007BFF;
-    color: white;
-    border: none;
+.password-container {
+    position: relative;
+}
+
+.show-password-icon {
+    position: absolute;
+    right: 0px;
+    top: 50%;
+    transform: translateY(-0%);
     cursor: pointer;
-    font-weight: bold;
+    width: 24px;
+    height: 24px;
 }
 
-.login-container form button:hover {
+.login-button {
+    width: 70px;
+    padding: 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    text-align: center;
+    position: absolute;
+    left: 330px;
+}
+
+.login-button:hover {
     background-color: #0056b3;
-}
-
-.feedback {
-    margin-top: 20px;
-    font-size: 16px;
-    color: green;
-}
-
-.feedback.error {
-    color: red;
 }

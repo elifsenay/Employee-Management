@@ -2,8 +2,12 @@ package com.example.employeemanagement.controller;
 
 import com.example.employeemanagement.exception.ResourceNotFoundException;
 import com.example.employeemanagement.model.Employee;
+import com.example.employeemanagement.model.LeaveRequest;
+import com.example.employeemanagement.repository.EmployeeRepository;
+import com.example.employeemanagement.repository.LeaveRequestRepository;
 import com.example.employeemanagement.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +20,12 @@ import java.util.Optional;
 @RequestMapping("/api/employees")
 @Validated
 public class EmployeeController {
+
+    @Autowired
+    private EmployeeRepository employeeRepository;
+
+    @Autowired
+    private LeaveRequestRepository leaveRequestRepository;
 
     @Autowired
     private EmployeeService employeeService;
@@ -53,16 +63,17 @@ public class EmployeeController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteEmployee(@PathVariable String id) {
-        try {
-            Long employeeId = Long.parseLong(id);
-            if (employeeService.deleteEmployee(employeeId)) {
-                return ResponseEntity.noContent().build();
-            } else {
-                return ResponseEntity.notFound().build();
-            }
-        } catch (NumberFormatException e) {
-            return ResponseEntity.badRequest().build(); // Return 400 Bad Request for invalid ID
+    public ResponseEntity<Void> deleteEmployee(@PathVariable Long id) {
+        Optional<Employee> employeeOpt = employeeRepository.findById(id);
+
+        if (employeeOpt.isPresent()) {
+            List<LeaveRequest> leaveRequests = leaveRequestRepository.findByEmployeeId(id);
+            leaveRequestRepository.deleteAll(leaveRequests);
+
+            employeeRepository.delete(employeeOpt.get());
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 }

@@ -1,26 +1,35 @@
-/* src/EmployeeList.css */
 .employee-list-container {
     text-align: center;
     padding: 20px;
 }
 
-.employee-list-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
+h2 {
+    margin-bottom: 20px;
+    font-size: 2rem;
 }
 
-.employee-list-table, th, td {
+.employee-list-table {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    border-collapse: collapse;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.employee-list-table th, .employee-list-table td {
+    padding: 12px;
+    text-align: center;
     border: 1px solid #ddd;
 }
 
-.employee-list-table th, td {
-    padding: 10px;
-    text-align: center; /* Center all text */
+.employee-list-table th {
+    background-color: #007bff;
+    color: white;
 }
 
-.employee-list-table th {
-    background-color: #f2f2f2;
+.employee-list-table td {
+    background-color: #f9f9f9;
 }
 
 .employee-list-table .action-buttons {
@@ -29,15 +38,42 @@
     gap: 10px;
 }
 
-.employee-list-table .action-buttons button {
-    padding: 5px 10px;
-    border: none;
-    background-color: #007bff; /* Blue color */
+.employee-list-table .update-button {
+    background-color: #007bff;
     color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
     cursor: pointer;
-    border-radius: 4px;
 }
 
-.employee-list-table .action-buttons button:hover {
-    background-color: #0056b3; /* Darker blue on hover */
+.employee-list-table .delete-button {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.employee-list-table .update-button:hover {
+    background-color: #0056b3;
+}
+
+.employee-list-table .delete-button:hover {
+    background-color: #c82333;
+}
+
+.new-employee-button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.new-employee-button:hover {
+    background-color: #0056b3;
 }

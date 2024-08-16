@@ -8,7 +8,6 @@
     flex-direction: column;
     align-items: center;
     margin-bottom: 20px;
-    text-align: left;
 }
 
 .leave-request-container form label {
@@ -28,7 +27,7 @@
     color: white;
     border: none;
     cursor: pointer;
-    border-radius: 4px; /* Added for rounded corners */
+    border-radius: 4px;
 }
 
 .leave-request-container form button:hover {
@@ -45,50 +44,19 @@
     color: red;
 }
 
-.leave-requests-box {
-    border: 1px solid #ccc;
-    padding: 20px;
-    margin: 10px auto;
-    width: 100%;
-    max-width: 1000px;
-    text-align: center;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    box-sizing: border-box;
-}
-
-.leave-requests-box table {
-    width: 100%;
-    border-collapse: collapse; /* Ensure borders are collapsed */
-    border: none; /* Remove table-level border */
-}
-
-.leave-requests-box th, td {
-    padding: 10px;
-    border: 1px solid #ddd; /* Ensures all cells have borders */
-    text-align: center; /* Center-align text in all table cells */
-}
-
-.leave-requests-box th {
-    background-color: #f2f2f2;
-}
-
-.action-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-}
-
-.action-buttons button {
-    padding: 5px 10px;
-    border: none;
-    background-color: #007bff; /* Blue color */
+.view-requests-button {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 0.7rem;
+    background-color: #007BFF;
     color: white;
+    border: none;
     cursor: pointer;
     border-radius: 4px;
+    text-decoration: none;
 }
 
-.action-buttons button:hover {
-    background-color: #0056b3; /* Darker blue on hover */
+.view-requests-button:hover {
+    background-color: #0056b3;
 }

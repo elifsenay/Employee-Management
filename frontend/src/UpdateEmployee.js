@@ -1,75 +1,122 @@
-// src/UpdateEmployee.js
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import './EmployeeEntry.css';
+import './UpdateEmployee.css';
 
 function UpdateEmployee() {
-    const { id } = useParams();
-    const navigate = useNavigate();
     const [employee, setEmployee] = useState({
         firstName: '',
         lastName: '',
         email: '',
         department: '',
-        remainingLeaveDays: 0
     });
-    const [feedback, setFeedback] = useState('');
+    const { id } = useParams();
+    const navigate = useNavigate();
 
     useEffect(() => {
-        fetch(`http://localhost:8080/api/employees/${id}`)
-            .then(response => response.json())
-            .then(data => setEmployee(data))
-            .catch(error => console.error('Error fetching employee:', error));
+        const fetchEmployee = async () => {
+            const token = localStorage.getItem('token');
+
+            const response = await fetch(`http://localhost:8080/api/employees/${id}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                setEmployee(data);
+            } else {
+                alert('Failed to fetch employee data');
+            }
+        };
+
+        fetchEmployee();
     }, [id]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
+
+        const token = localStorage.getItem('token');
+
         fetch(`http://localhost:8080/api/employees/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
             },
             body: JSON.stringify(employee),
         })
             .then(response => {
                 if (response.ok) {
-                    setFeedback('Employee updated successfully!');
-                    setTimeout(() => navigate('/employee-list'), 2000);
+                    navigate('/employee-list');
                 } else {
-                    setFeedback('Error updating employee. Please try again.');
+                    alert('Failed to update employee');
                 }
             })
-            .catch(error => {
-                setFeedback('Error updating employee. Please try again.');
-                console.error('Error:', error);
-            });
+            .catch(error => console.error('Error:', error));
     };
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
-        setEmployee(prevState => ({
-            ...prevState,
-            [name]: value
-        }));
+        setEmployee({
+            ...employee,
+            [e.target.name]: e.target.value
+        });
     };
 
     return (
-        <div className="employee-entry-container">
+        <div className="update-employee-container">
             <h2>Update Employee</h2>
-            <form onSubmit={handleSubmit}>
-                <label>First Name:</label>
-                <input type="text" name="firstName" value={employee.firstName} onChange={handleChange} />
-                <label>Last Name:</label>
-                <input type="text" name="lastName" value={employee.lastName} onChange={handleChange} />
-                <label>Email:</label>
-                <input type="email" name="email" value={employee.email} onChange={handleChange} />
-                <label>Department:</label>
-                <input type="text" name="department" value={employee.department} onChange={handleChange} />
-                <label>Remaining Leave Days:</label>
-                <input type="number" name="remainingLeaveDays" value={employee.remainingLeaveDays} onChange={handleChange} />
-                <button type="submit">Update</button>
+            <form onSubmit={handleSubmit} autoComplete="off">
+                <label>
+                    First Name:
+                    <input
+                        type="text"
+                        name="firstName"
+                        value={employee.firstName}
+                        onChange={handleChange}
+                        placeholder="Enter first name"
+                        autoComplete="off"
+                    />
+                </label>
+
+                <label>
+                    Last Name:
+                    <input
+                        type="text"
+                        name="lastName"
+                        value={employee.lastName}
+                        onChange={handleChange}
+                        placeholder="Enter last name"
+                        autoComplete="off"
+                    />
+                </label>
+
+                <label>
+                    Email:
+                    <input
+                        type="email"
+                        name="email"
+                        value={employee.email}
+                        onChange={handleChange}
+                        placeholder="Enter email address"
+                        autoComplete="off"
+                    />
+                </label>
+
+                <label>
+                    Department:
+                    <input
+                        type="text"
+                        name="department"
+                        value={employee.department}
+                        onChange={handleChange}
+                        placeholder="Enter department"
+                        autoComplete="off"
+                    />
+                </label>
+
+                <button type="submit">Update Employee</button>
             </form>
-            {feedback && <p className="feedback">{feedback}</p>}
         </div>
     );
 }

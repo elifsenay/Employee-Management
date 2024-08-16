@@ -1,4 +1,3 @@
-// src/EmployeeEntry.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './EmployeeEntry.css';
@@ -35,34 +34,59 @@ function EmployeeEntry() {
     };
 
     return (
-        <div className="form-container">
+        <div className="employee-entry-container">
             <h2>Add Employee</h2>
             <form onSubmit={handleSubmit}>
                 <label>
                     First Name:
-                    <input type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
+                    <input
+                        type="text"
+                        value={firstName}
+                        onChange={(e) => setFirstName(e.target.value)}
+                        placeholder="Enter first name"
+                    />
                 </label>
-                <br />
+
                 <label>
                     Last Name:
-                    <input type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} />
+                    <input
+                        type="text"
+                        value={lastName}
+                        onChange={(e) => setLastName(e.target.value)}
+                        placeholder="Enter last name"
+                    />
                 </label>
-                <br />
+
                 <label>
                     Email:
-                    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+                    <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="Enter email address"
+                    />
                 </label>
-                <br />
+
                 <label>
                     Department:
-                    <input type="text" value={department} onChange={(e) => setDepartment(e.target.value)} />
+                    <input
+                        type="text"
+                        value={department}
+                        onChange={(e) => setDepartment(e.target.value)}
+                        placeholder="Enter department"
+                    />
                 </label>
-                <br />
+
                 <label>
                     Password:
-                    <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                    <input
+                        type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder="Enter password"
+                    />
                 </label>
-                <br />
+
                 <button type="submit">Add Employee</button>
             </form>
         </div>

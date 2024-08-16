@@ -1,0 +1,97 @@
+.leave-requests-container {
+    text-align: center;
+    padding: 20px;
+    font-family: 'Roboto', Arial, sans-serif;
+}
+
+.leave-requests-table {
+    width: 100%;
+    max-width: 1100px;
+    margin: 20px auto;
+    border-collapse: collapse;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.leave-requests-table th, .leave-requests-table td {
+    padding: 15px;
+    text-align: center;
+    border: 1px solid #ddd;
+    font-size: 16px;
+    white-space: nowrap;
+}
+
+.leave-requests-table th {
+    background-color: #007bff;
+    color: white;
+}
+
+.leave-requests-table td {
+    background-color: #f9f9f9;
+}
+
+.actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.update-button, .delete-button {
+    padding: 10px 15px;
+    border: none;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+    min-width: 100px;
+    max-height: 33px;
+    text-align: center;
+}
+
+.update-button {
+    background-color: #007bff;
+}
+
+.update-button:hover {
+    background-color: #0056b3;
+}
+
+.delete-button {
+    background-color: #dc3545;
+}
+
+.delete-button:hover {
+    background-color: #c82333;
+}
+
+
+@media (max-width: 768px) {
+    .leave-requests-table, th, td {
+        display: block;
+        width: 100%;
+    }
+    .leave-requests-table th, .leave-requests-table td {
+        text-align: left;
+        padding-left: 15px;
+        white-space: normal;
+    }
+    .actions {
+        flex-direction: column;
+    }
+}
+
+.new-leave-request-button {
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    min-width: 100px;
+    max-height: 33px;
+    text-align: center;
+}
+
+.new-leave-request-button:hover {
+    background-color: #0056b3;
+}
+

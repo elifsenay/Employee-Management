@@ -1,9 +1,10 @@
-// src/EmployeeList.js
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './EmployeeList.css';
 
 function EmployeeList() {
     const [employees, setEmployees] = useState([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchEmployees = async () => {
@@ -26,10 +27,33 @@ function EmployeeList() {
         fetchEmployees();
     }, []);
 
+    // Function to handle deleting an employee
+    const handleDelete = async (employeeId) => {
+        const token = localStorage.getItem('token');
+
+        const response = await fetch(`http://localhost:8080/api/employees/${employeeId}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            }
+        });
+
+        if (response.ok) {
+            setEmployees(employees.filter(employee => employee.id !== employeeId));
+        } else {
+            alert('Failed to delete employee');
+        }
+    };
+
+    // Function to handle updating an employee (redirect)
+    const handleUpdate = (employeeId) => {
+        navigate(`/update-employee/${employeeId}`);
+    };
+
     return (
         <div className="employee-list-container">
             <h2>Employee List</h2>
-            <table>
+            <table className="employee-list-table">
                 <thead>
                 <tr>
                     <th>ID</th>
@@ -38,6 +62,7 @@ function EmployeeList() {
                     <th>Email</th>
                     <th>Department</th>
                     <th>Remaining Leave Days</th>
+                    <th>Actions</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -49,10 +74,15 @@ function EmployeeList() {
                         <td>{employee.email}</td>
                         <td>{employee.department}</td>
                         <td>{employee.remainingLeaveDays}</td>
+                        <td className="action-buttons">
+                            <button className="update-button" onClick={() => handleUpdate(employee.id)}>Update</button>
+                            <button className="delete-button" onClick={() => handleDelete(employee.id)}>Delete</button>
+                        </td>
                     </tr>
                 ))}
                 </tbody>
             </table>
+            <button className="new-employee-button" onClick={() => navigate('/employee-entry')}>Create New Employee</button>
         </div>
     );
 }
