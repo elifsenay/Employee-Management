@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './EmployeeList.css';
+import LogoutButton from "./LogoutButton";
 
 function EmployeeList() {
     const [employees, setEmployees] = useState([]);
@@ -27,7 +28,6 @@ function EmployeeList() {
         fetchEmployees();
     }, []);
 
-    // Function to handle deleting an employee
     const handleDelete = async (employeeId) => {
         const token = localStorage.getItem('token');
 
@@ -45,13 +45,19 @@ function EmployeeList() {
         }
     };
 
-    // Function to handle updating an employee (redirect)
     const handleUpdate = (employeeId) => {
         navigate(`/update-employee/${employeeId}`);
     };
 
+    const handleChangePassword = (employeeId) => {
+        localStorage.setItem('employeeId', employeeId);
+        navigate(`/change-password/:employeeId`);
+    };
+
+
     return (
         <div className="employee-list-container">
+            <LogoutButton />
             <h2>Employee List</h2>
             <table className="employee-list-table">
                 <thead>
@@ -77,6 +83,7 @@ function EmployeeList() {
                         <td className="action-buttons">
                             <button className="update-button" onClick={() => handleUpdate(employee.id)}>Update</button>
                             <button className="delete-button" onClick={() => handleDelete(employee.id)}>Delete</button>
+                            <button className="change-password-button" onClick={() => handleChangePassword(employee.id)}>Change Password</button>
                         </td>
                     </tr>
                 ))}

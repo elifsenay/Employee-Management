@@ -38,22 +38,23 @@ h2 {
     gap: 10px;
 }
 
-.employee-list-table .update-button {
+.employee-list-table .update-button,
+.employee-list-table .delete-button,
+.employee-list-table .change-password-button {
     background-color: #007bff;
     color: white;
     border: none;
-    padding: 5px 10px;
+    padding: 8px 15px;
     border-radius: 5px;
     cursor: pointer;
 }
 
 .employee-list-table .delete-button {
     background-color: #dc3545;
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 5px;
-    cursor: pointer;
+}
+
+.employee-list-table .change-password-button {
+    background-color: #28a745;
 }
 
 .employee-list-table .update-button:hover {
@@ -62,6 +63,10 @@ h2 {
 
 .employee-list-table .delete-button:hover {
     background-color: #c82333;
+}
+
+.employee-list-table .change-password-button:hover {
+    background-color: #218838;
 }
 
 .new-employee-button {
@@ -76,4 +81,53 @@ h2 {
 
 .new-employee-button:hover {
     background-color: #0056b3;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .employee-list-table, th, td {
+        display: block;
+        width: 100%;
+    }
+
+    .employee-list-table th, .employee-list-table td {
+        text-align: left;
+        padding: 10px;
+    }
+
+    .employee-list-table td {
+        display: block;
+        padding-left: 10px;
+    }
+
+    .employee-list-table .action-buttons {
+        justify-content: flex-start;
+        display: flex;
+        gap: 10px;
+    }
+}
+
+@media (max-width: 576px) {
+    .employee-list-table {
+        max-width: 100%;
+    }
+
+    h2 {
+        font-size: 1.5rem;
+    }
+
+    .employee-list-table .action-buttons {
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .employee-list-table .update-button,
+    .employee-list-table .delete-button,
+    .employee-list-table .change-password-button {
+        width: 100%;
+    }
+
+    .new-employee-button {
+        width: 100%;
+    }
 }

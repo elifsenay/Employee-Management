@@ -56,8 +56,11 @@ input {
     cursor: pointer;
     text-align: center;
     position: absolute;
-    left: 330px;
+    top: 70%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
+
 
 .login-button:hover {
     background-color: #0056b3;

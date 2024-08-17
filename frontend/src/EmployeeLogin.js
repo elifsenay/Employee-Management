@@ -27,6 +27,7 @@ function EmployeeLogin() {
             })
             .then(data => {
                 localStorage.setItem('token', data.jwt);
+                localStorage.setItem('employeeId', data.employeeId)
                 navigate('/home');
             })
             .catch(error => {

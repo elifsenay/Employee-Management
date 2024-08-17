@@ -1,4 +1,3 @@
-// src/App.js
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import Home from './Home';
@@ -9,8 +8,9 @@ import EmployeeLogin from "./EmployeeLogin";
 import UpdateEmployee from './UpdateEmployee';
 import LeaveRequestsList from './LeaveRequestsList';
 import UpdateLeaveRequest from "./UpdateLeaveRequest";
+import PrivateRoute from './PrivateRoute';
 import './App.css';
-
+import ChangePassword from "./ChangePassword";
 
 function App() {
     return (
@@ -19,14 +19,47 @@ function App() {
                 <Routes>
                     <Route path="/" element={<Navigate to="/login" />} />
                     <Route path="/login" element={<EmployeeLogin />} />
-                    <Route path="/home" element={<Home />} />
-                    <Route path="/employee-entry" element={<EmployeeEntry />} />
-                    <Route path="/employee-list" element={<EmployeeList />} />
-                    <Route path="/leave-requests" element={<LeaveRequest />} />
-                    <Route path="/update-employee/:id" element={<UpdateEmployee />} />
-                    <Route path="/leave-requests-list" element={<LeaveRequestsList />} />
-                    <Route path="/update-leave-request/:id" element={<UpdateLeaveRequest />} />
 
+                    <Route path="/home" element={
+                        <PrivateRoute>
+                            <Home />
+                        </PrivateRoute>
+                    } />
+                    <Route path="/employee-entry" element={
+                        <PrivateRoute>
+                            <EmployeeEntry />
+                        </PrivateRoute>
+                    } />
+                    <Route path="/employee-list" element={
+                        <PrivateRoute>
+                            <EmployeeList />
+                        </PrivateRoute>
+                    } />
+                    <Route path="/leave-requests" element={
+                        <PrivateRoute>
+                            <LeaveRequest />
+                        </PrivateRoute>
+                    } />
+                    <Route path="/update-employee/:id" element={
+                        <PrivateRoute>
+                            <UpdateEmployee />
+                        </PrivateRoute>
+                    } />
+                    <Route path="/leave-requests-list" element={
+                        <PrivateRoute>
+                            <LeaveRequestsList />
+                        </PrivateRoute>
+                    } />
+                    <Route path="/update-leave-request/:id" element={
+                        <PrivateRoute>
+                            <UpdateLeaveRequest />
+                        </PrivateRoute>
+                    } />
+                    <Route path="/change-password/:employeeId" element={
+                        <PrivateRoute>
+                            <ChangePassword />
+                        </PrivateRoute>
+                    } />
                 </Routes>
             </div>
         </Router>

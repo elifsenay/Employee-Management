@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './LeaveRequestsList.css';
+import LogoutButton from "./LogoutButton";
 
 function LeaveRequestsList() {
     const [leaveRequests, setLeaveRequests] = useState([]);
@@ -70,6 +71,7 @@ function LeaveRequestsList() {
 
     return (
         <div className="leave-requests-container">
+            <LogoutButton />
             <h2>Leave Requests</h2>
             <table className="leave-requests-table">
                 <thead>

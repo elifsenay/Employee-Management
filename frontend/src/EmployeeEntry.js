@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './EmployeeEntry.css';
+import LogoutButton from "./LogoutButton";
 
 function EmployeeEntry() {
     const [firstName, setFirstName] = useState('');
@@ -35,6 +36,7 @@ function EmployeeEntry() {
 
     return (
         <div className="employee-entry-container">
+            <LogoutButton />
             <h2>Add Employee</h2>
             <form onSubmit={handleSubmit}>
                 <label>

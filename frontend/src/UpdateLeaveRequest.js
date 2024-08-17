@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import './UpdateLeaveRequest.css';
+import LogoutButton from "./LogoutButton";
 
 function UpdateLeaveRequest() {
     const { id } = useParams();
@@ -73,11 +74,12 @@ function UpdateLeaveRequest() {
     };
 
     const handleCancel = () => {
-        navigate('/leave-requests-list');  // Navigate back to leave requests list
+        navigate('/leave-requests-list');
     };
 
     return (
         <div className="update-leave-request-container">
+            <LogoutButton />
             <h2>Update Leave Request</h2>
             <form onSubmit={handleSubmit}>
                 <label>Employee:</label>

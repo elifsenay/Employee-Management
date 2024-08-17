@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import './UpdateEmployee.css';
+import LogoutButton from "./LogoutButton";
 
 function UpdateEmployee() {
     const [employee, setEmployee] = useState({
@@ -63,8 +64,13 @@ function UpdateEmployee() {
         });
     };
 
+    const handleCancel = () => {
+        navigate('/employee-list'); // Redirects to the employee list page
+    };
+
     return (
         <div className="update-employee-container">
+            <LogoutButton />
             <h2>Update Employee</h2>
             <form onSubmit={handleSubmit} autoComplete="off">
                 <label>
@@ -115,7 +121,10 @@ function UpdateEmployee() {
                     />
                 </label>
 
-                <button type="submit">Update Employee</button>
+                <div className="button-group">
+                    <button type="submit" className="update-button">Update Employee</button>
+                    <button type="button" className="cancel-button" onClick={handleCancel}>Cancel</button>
+                </div>
             </form>
         </div>
     );
