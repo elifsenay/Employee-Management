@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import './UpdateEmployee.css';
 import LogoutButton from "./LogoutButton";
+import HomeButton from "./HomeButton";
 
 function UpdateEmployee() {
     const [employee, setEmployee] = useState({
@@ -70,6 +71,7 @@ function UpdateEmployee() {
 
     return (
         <div className="update-employee-container">
+            <HomeButton/>
             <LogoutButton />
             <h2>Update Employee</h2>
             <form onSubmit={handleSubmit} autoComplete="off">

@@ -3,6 +3,8 @@ package com.example.employeemanagement;
 import com.example.employeemanagement.controller.EmployeeController;
 import com.example.employeemanagement.exception.GlobalExceptionHandler;
 import com.example.employeemanagement.model.Employee;
+import com.example.employeemanagement.repository.EmployeeRepository;
+import com.example.employeemanagement.repository.LeaveRequestRepository;
 import com.example.employeemanagement.service.EmployeeService;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,7 +13,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -29,6 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(MockitoJUnitRunner.class)
 @SpringBootTest
 @Transactional
+@WebMvcTest(EmployeeController.class)
 public class EmployeeControllerTest {
 
     private MockMvc mockMvc;
@@ -36,6 +41,11 @@ public class EmployeeControllerTest {
     @Mock
     private EmployeeService employeeService;
 
+    @Mock
+    private EmployeeRepository employeeRepository;
+
+    @Mock
+    private LeaveRequestRepository leaveRequestRepository;
     @InjectMocks
     private EmployeeController employeeController;
 
@@ -56,15 +66,17 @@ public class EmployeeControllerTest {
         employee.setLastName("Doe");
         employee.setEmail("john.doe@example.com");
         employee.setDepartment("IT");
+        employee.setPassword("password123");  // Include password
 
         when(employeeService.saveEmployee(any(Employee.class))).thenReturn(employee);
 
         mockMvc.perform(post("/api/employees")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"firstName\": \"John\", \"lastName\": \"Doe\", \"email\": \"john.doe@example.com\", \"department\": \"IT\"}"))
+                        .content("{\"firstName\": \"John\", \"lastName\": \"Doe\", \"email\": \"john.doe@example.com\", \"department\": \"IT\", \"password\": \"password123\"}")) // Include password
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.firstName").value("John"));
     }
+
 
     // Positive Test Case: Verifies that getting an employee by ID is handled correctly
     @Test
@@ -107,7 +119,7 @@ public class EmployeeControllerTest {
     // Positive Test Case: Verifies that deleting an employee is handled correctly
     @Test
     public void testDeleteEmployee() throws Exception {
-        when(employeeService.deleteEmployee(anyLong())).thenReturn(true);
+        when(employeeRepository.findById(anyLong())).thenReturn(Optional.of(new Employee()));
 
         mockMvc.perform(delete("/api/employees/1")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -133,22 +145,23 @@ public class EmployeeControllerTest {
         updatedEmployee.setLastName("Doe");
         updatedEmployee.setEmail("john.doe@example.com");
         updatedEmployee.setDepartment("IT");
+        updatedEmployee.setPassword("password123"); // Set the password
 
         when(employeeService.updateEmployee(anyLong(), any(Employee.class))).thenReturn(Optional.of(updatedEmployee));
 
         mockMvc.perform(put("/api/employees/1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"firstName\": \"John\", \"lastName\": \"Doe\", \"email\": \"john.doe@example.com\", \"department\": \"IT\"}"))
+                        .content("{\"firstName\": \"John\", \"lastName\": \"Doe\", \"email\": \"john.doe@example.com\", \"department\": \"IT\", \"password\": \"password123\"}"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.firstName").value("John"))
                 .andExpect(jsonPath("$.email").value("john.doe@example.com"));
     }
 
 
+
     // Negative Test Case: Verifies that deleting an employee returns 404 when the employee is not found
     @Test
     public void testDeleteEmployee_Negative() throws Exception {
-        when(employeeService.deleteEmployee(anyLong())).thenReturn(false);
 
         mockMvc.perform(delete("/api/employees/1")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -158,7 +171,6 @@ public class EmployeeControllerTest {
     // Negative Test Case: Verifies that deleting an already deleted employee returns 404
     @Test
     public void testDeleteAlreadyDeletedEmployee() throws Exception {
-        when(employeeService.deleteEmployee(anyLong())).thenReturn(false);
 
         mockMvc.perform(delete("/api/employees/1")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -172,9 +184,10 @@ public class EmployeeControllerTest {
 
         mockMvc.perform(put("/api/employees/1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"firstName\": \"John\", \"lastName\": \"Doe\", \"email\": \"john.doe@example.com\", \"department\": \"IT\"}"))
+                        .content("{\"firstName\": \"John\", \"lastName\": \"Doe\", \"email\": \"john.doe@example.com\", \"department\": \"IT\", \"password\": \"password123\"}"))
                 .andExpect(status().isNotFound());
     }
+
 
     // Negative Test Case: Verifies that adding an employee with duplicate email returns 409 conflict
     @Test
@@ -183,7 +196,7 @@ public class EmployeeControllerTest {
 
         mockMvc.perform(post("/api/employees")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"firstName\": \"John\", \"lastName\": \"Doe\", \"email\": \"john.doe@example.com\", \"department\": \"IT\"}"))
+                        .content("{\"firstName\": \"John\", \"lastName\": \"Doe\", \"email\": \"john.doe@example.com\", \"department\": \"IT\", \"password\": \"password123\"}"))
                 .andExpect(status().isConflict());
     }
 

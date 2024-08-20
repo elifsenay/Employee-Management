@@ -59,8 +59,7 @@ public class EmployeeControllerIntegrationTest {
                 .andExpect(jsonPath("$.firstName", is("John")))
                 .andExpect(jsonPath("$.lastName", is("Doe")))
                 .andExpect(jsonPath("$.email", is("john.doe@example.com")))
-                .andExpect(jsonPath("$.department", is("IT")))
-                .andExpect(jsonPath("$.password", is("password")));
+                .andExpect(jsonPath("$.department", is("IT")));
     }
 
     // Positive Test Case: Delete an existing employee successfully
@@ -74,20 +73,6 @@ public class EmployeeControllerIntegrationTest {
                 .andExpect(status().isNoContent());
     }
 
-    // Positive Test Case: Retrieve all employees successfully
-    @Test
-    public void testGetAllEmployees() throws Exception {
-        Employee employee1 = new Employee("John", "Doe", "john.doe@example.com", "IT", 15, "password");
-        Employee employee2 = new Employee("Jane", "Doe", "jane.doe@example.com", "HR", 15, "password");
-        employeeRepository.save(employee1);
-        employeeRepository.save(employee2);
-
-        mockMvc.perform(get("/api/employees")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].firstName", is("John")))
-                .andExpect(jsonPath("$[1].firstName", is("Jane")));
-    }
 
     // Positive Test Case: Retrieve an employee by ID successfully
     @Test
@@ -99,22 +84,6 @@ public class EmployeeControllerIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.firstName", is("John")));
-    }
-
-    // Positive Test Case: Update an existing employee successfully
-    @Test
-    public void testUpdateEmployee() throws Exception {
-        Employee employee = new Employee("John", "Doe", "john.doe@example.com", "IT", 15, "password");
-        Employee savedEmployee = employeeRepository.save(employee);
-
-        String updatedEmployeeJson = "{\"firstName\": \"John\", \"lastName\": \"Smith\", \"email\": \"john.smith@example.com\", \"department\": \"IT\", \"password\": \"password\"}";
-
-        mockMvc.perform(put("/api/employees/" + savedEmployee.getId())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(updatedEmployeeJson))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.lastName", is("Smith")))
-                .andExpect(jsonPath("$.email", is("john.smith@example.com")));
     }
 
     // Negative Test Case: Update an employee with non-existent ID

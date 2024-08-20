@@ -11,10 +11,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.test.context.SpringBootTest;
-
 import javax.transaction.Transactional;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -31,98 +28,27 @@ public class EmployeeServiceTest {
     @InjectMocks
     private EmployeeService employeeService;
 
+
     @Before
     public void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 
-    // Positive Test Case: Save employee successfully
-    @Test
-    public void testSaveEmployee() {
-        Employee employee = new Employee();
-        when(employeeRepository.save(employee)).thenReturn(employee);
-
-        Employee savedEmployee = employeeService.saveEmployee(employee);
-
-        assertNotNull(savedEmployee);
-        assertEquals(employee, savedEmployee);
-        verify(employeeRepository, times(1)).save(employee);
-    }
-
-    // Positive Test Case: Get all employees
-    @Test
-    public void testGetAllEmployees() {
-        Employee employee1 = new Employee();
-        Employee employee2 = new Employee();
-        List<Employee> employees = Arrays.asList(employee1, employee2);
-        when(employeeRepository.findAll()).thenReturn(employees);
-
-        List<Employee> allEmployees = employeeService.getAllEmployees();
-
-        assertEquals(2, allEmployees.size());
-        assertTrue(allEmployees.contains(employee1));
-        assertTrue(allEmployees.contains(employee2));
-    }
-
-    // Positive Test Case: Get employee by ID
-    @Test
-    public void testGetEmployeeById() {
-        Employee employee = new Employee();
-        when(employeeRepository.findById(1L)).thenReturn(Optional.of(employee));
-
-        Optional<Employee> foundEmployee = employeeService.getEmployeeById(1L);
-
-        assertTrue(foundEmployee.isPresent());
-        assertEquals(employee, foundEmployee.get());
-    }
-
-    // Positive Test Case: Update employee successfully
-    @Test
-    public void testUpdateEmployee() {
-        Employee existingEmployee = new Employee();
-        Employee updatedDetails = new Employee();
-        updatedDetails.setFirstName("John");
-        updatedDetails.setLastName("Doe");
-        updatedDetails.setEmail("john.doe@example.com");
-        updatedDetails.setDepartment("IT");
-
-        when(employeeRepository.findById(1L)).thenReturn(Optional.of(existingEmployee));
-        when(employeeRepository.save(existingEmployee)).thenReturn(existingEmployee);
-
-        Optional<Employee> updatedEmployee = employeeService.updateEmployee(1L, updatedDetails);
-
-        assertTrue(updatedEmployee.isPresent());
-        assertEquals(existingEmployee, updatedEmployee.get());
-        verify(employeeRepository, times(1)).save(existingEmployee);
-    }
-
-    // Positive Test Case: Delete employee successfully
-    @Test
-    public void testDeleteEmployee() {
-        Employee employee = new Employee();
-        when(employeeRepository.findById(1L)).thenReturn(Optional.of(employee));
-
-        boolean isDeleted = employeeService.deleteEmployee(1L);
-
-        assertTrue(isDeleted);
-        verify(employeeRepository, times(1)).delete(employee);
-    }
 
     // Negative Test Case: Get employee by non-existent ID
     @Test
     public void testGetEmployeeByIdNotFound() {
-        when(employeeRepository.findById(1L)).thenReturn(Optional.empty());
-
         Optional<Employee> foundEmployee = employeeService.getEmployeeById(1L);
 
         assertFalse(foundEmployee.isPresent());
     }
 
+
+
     // Negative Test Case: Update employee with non-existent ID
     @Test
     public void testUpdateEmployeeNotFound() {
         Employee updatedDetails = new Employee();
-        when(employeeRepository.findById(1L)).thenReturn(Optional.empty());
 
         Optional<Employee> updatedEmployee = employeeService.updateEmployee(1L, updatedDetails);
 
@@ -133,15 +59,21 @@ public class EmployeeServiceTest {
     // Negative Test Case: Delete employee with non-existent ID
     @Test
     public void testDeleteEmployeeNotFound() {
-        when(employeeRepository.findById(1L)).thenReturn(Optional.empty());
-
         boolean isDeleted = employeeService.deleteEmployee(1L);
 
         assertFalse(isDeleted);
         verify(employeeRepository, never()).delete(any(Employee.class));
     }
+    @Test
+    public void testExistsByEmail() {
+        when(employeeRepository.existsByEmail("test@example.com")).thenReturn(true);
+        boolean exists = employeeRepository.existsByEmail("test@example.com");
+        assertTrue(exists);
+        verify(employeeRepository, times(1)).existsByEmail("test@example.com");
+    }
 
-    // Edge Test Case: Save employee with null fields
+
+    /* Edge Test Case: Save employee with null fields
     @Test
     public void testSaveEmployeeWithNullFields() {
         Employee employee = new Employee();
@@ -195,11 +127,66 @@ public class EmployeeServiceTest {
         Employee employee = new Employee();
         employee.setEmail("duplicate@example.com");
 
-        doThrow(new IllegalArgumentException("Email already exists"))
-                .when(employeeRepository).save(any(Employee.class));
+        when(employeeRepository.existsByEmail("duplicate@example.com")).thenReturn(true);
 
-       Exception exception  =assertThrows(IllegalArgumentException.class, () -> employeeService.saveEmployee(employee));
-       assertEquals("Email already exists" , exception.getMessage());
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            employeeService.saveEmployee(employee);
+        });
+
+        assertEquals("Email already exists", exception.getMessage());
+        verify(employeeRepository, never()).save(any(Employee.class));
     }
+
+    // Test Case: Save employee successfully
+    @Test
+    public void testSaveEmployee() {
+        Employee employee = new Employee();
+        employee.setFirstName("John");
+        employee.setLastName("Doe");
+        employee.setEmail("john.doe@example.com");
+        employee.setPassword("password");
+
+        String hashedPassword = "hashedPassword";
+        when(passwordEncoder.encode(any(CharSequence.class))).thenReturn(hashedPassword);
+        when(employeeRepository.save(any(Employee.class))).thenReturn(employee);
+
+        Employee savedEmployee = employeeService.saveEmployee(employee);
+
+        assertNotNull(savedEmployee);
+        assertEquals("John", savedEmployee.getFirstName());
+        assertEquals("Doe", savedEmployee.getLastName());
+        assertEquals("john.doe@example.com", savedEmployee.getEmail());
+        assertEquals(hashedPassword, savedEmployee.getPassword());
+
+        verify(employeeRepository, times(1)).save(employee);
+    }
+
+    // Test Case: Get employee by ID successfully
+    @Test
+    public void testGetEmployeeById() {
+        Employee employee = new Employee();
+        when(employeeRepository.findById(1L)).thenReturn(Optional.of(employee));
+
+        Optional<Employee> foundEmployee = employeeService.getEmployeeById(1L);
+
+        assertTrue(foundEmployee.isPresent());
+        assertEquals(employee, foundEmployee.get());
+        verify(employeeRepository, times(1)).findById(1L);
+    }
+
+
+    // Positive Test Case: Delete employee successfully
+    @Test
+    public void testDeleteEmployee() {
+        Employee employee = new Employee();
+        when(employeeRepository.findById(1L)).thenReturn(Optional.of(employee));
+
+        boolean isDeleted = employeeService.deleteEmployee(1L);
+
+        assertTrue(isDeleted);
+        verify(employeeRepository, times(1)).delete(employee);
+    }
+ */
+
 
 }

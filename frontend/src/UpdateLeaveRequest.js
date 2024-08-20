@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import './UpdateLeaveRequest.css';
 import LogoutButton from "./LogoutButton";
+import HomeButton from "./HomeButton";
 
 function UpdateLeaveRequest() {
     const { id } = useParams();
@@ -79,6 +80,7 @@ function UpdateLeaveRequest() {
 
     return (
         <div className="update-leave-request-container">
+            <HomeButton/>
             <LogoutButton />
             <h2>Update Leave Request</h2>
             <form onSubmit={handleSubmit}>

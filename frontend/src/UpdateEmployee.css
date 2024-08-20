@@ -37,6 +37,7 @@
     border-radius: 4px;
     cursor: pointer;
     width: 100%;
+    min-height: 40px;
 }
 
 .update-button {

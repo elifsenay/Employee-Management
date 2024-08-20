@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import HomeButton from "./HomeButton";
+import './ChangePassword.css';
 
 function ChangePassword() {
     const [oldPassword, setOldPassword] = useState('');
@@ -53,6 +55,7 @@ function ChangePassword() {
 
     return (
         <div className="change-password-container">
+            <HomeButton/>
             <h2>Change Password</h2>
             <form onSubmit={handleSubmit}>
                 <label>

@@ -3,6 +3,7 @@ import Select from 'react-select';
 import { Link } from 'react-router-dom';
 import './LeaveRequest.css';
 import LogoutButton from "./LogoutButton";
+import HomeButton from "./HomeButton";
 
 function LeaveRequest() {
     const [selectedEmployee, setSelectedEmployee] = useState(null);
@@ -64,6 +65,7 @@ function LeaveRequest() {
 
     return (
         <div className="leave-request-container">
+            <HomeButton/>
             <LogoutButton />
             <h2>Add Leave Request</h2>
             <form onSubmit={handleSubmit}>

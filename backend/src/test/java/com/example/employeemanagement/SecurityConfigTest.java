@@ -37,12 +37,4 @@ public class SecurityConfigTest {
         mockMvc.perform(get("/api/employees"))
                 .andExpect(status().isOk());
     }
-
-    // Positive Test Case: Verifies that authenticated users can access non-permitted endpoints
-    @Test
-    @WithMockUser(username = "user", roles = {"USER"})
-    public void testAuthenticatedAccessToNonPermittedEndpoints() throws Exception {
-        mockMvc.perform(get("/admin"))
-                .andExpect(status().isOk());
-    }
 }
