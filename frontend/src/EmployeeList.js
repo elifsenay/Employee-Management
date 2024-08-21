@@ -6,6 +6,7 @@ import HomeButton from "./HomeButton";
 
 function EmployeeList() {
     const [employees, setEmployees] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -28,6 +29,12 @@ function EmployeeList() {
 
         fetchEmployees();
     }, []);
+
+    const filteredEmployees = employees.filter(employee =>
+        employee.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        employee.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        employee.email.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
     const handleDelete = async (employeeId) => {
         const token = localStorage.getItem('token');
@@ -61,6 +68,13 @@ function EmployeeList() {
             <HomeButton/>
             <LogoutButton />
             <h2>Employee List</h2>
+            <input
+                type="text"
+                placeholder="Search by name or email"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="search-bar"
+            />
             <table className="employee-list-table">
                 <thead>
                 <tr>
@@ -74,7 +88,7 @@ function EmployeeList() {
                 </tr>
                 </thead>
                 <tbody>
-                {employees.map(employee => (
+                {filteredEmployees.map(employee => (
                     <tr key={employee.id}>
                         <td>{employee.id}</td>
                         <td>{employee.firstName}</td>

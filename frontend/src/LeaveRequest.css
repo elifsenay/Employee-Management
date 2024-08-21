@@ -60,3 +60,15 @@
 .view-requests-button:hover {
     background-color: #0056b3;
 }
+
+.error-text {
+    color: red;
+    font-size: 0.85rem;
+    margin-top: 5px;
+}
+
+.feedback {
+    color: green;
+    font-size: 0.85rem;
+    margin-top: 10px;
+}

@@ -10,10 +10,29 @@ function EmployeeEntry() {
     const [email, setEmail] = useState('');
     const [department, setDepartment] = useState('');
     const [password, setPassword] = useState('');
+    const [errors, setErrors] = useState({});
     const navigate = useNavigate();
+
+    const validateForm = () => {
+        const newErrors = {};
+
+        if (!firstName) newErrors.firstName = '* First name is required';
+        if (!lastName) newErrors.lastName = '* Last name is required';
+        if (!email) newErrors.email = '* Email is required';
+        if (!department) newErrors.department = '* Department is required';
+        if (!password) newErrors.password = '* Password is required';
+
+        return newErrors;
+    };
 
     const handleSubmit = (e) => {
         e.preventDefault();
+
+        const validationErrors = validateForm();
+        if (Object.keys(validationErrors).length > 0) {
+            setErrors(validationErrors);
+            return;
+        }
 
         const token = localStorage.getItem('token');
 
@@ -29,7 +48,7 @@ function EmployeeEntry() {
                 if (response.ok) {
                     navigate('/employee-list');
                 } else {
-                    alert('Failed to add employee');
+                    setErrors({ apiError: 'Failed to add employee' });
                 }
             })
             .catch(error => console.error('Error:', error));
@@ -37,7 +56,7 @@ function EmployeeEntry() {
 
     return (
         <div className="employee-entry-container">
-            <HomeButton/>
+            <HomeButton />
             <LogoutButton />
             <h2>Add Employee</h2>
             <form onSubmit={handleSubmit}>
@@ -47,8 +66,10 @@ function EmployeeEntry() {
                         type="text"
                         value={firstName}
                         onChange={(e) => setFirstName(e.target.value)}
-                        placeholder="Enter first name"
+                        placeholder="Please enter first name"
+                        style={{ borderColor: errors.firstName ? '#c82333' : '' }}
                     />
+                    {errors.firstName && <p className="error-text">{errors.firstName}</p>}
                 </label>
 
                 <label>
@@ -57,8 +78,10 @@ function EmployeeEntry() {
                         type="text"
                         value={lastName}
                         onChange={(e) => setLastName(e.target.value)}
-                        placeholder="Enter last name"
+                        placeholder="Please enter last name"
+                        style={{ borderColor: errors.lastName ? 'red' : '' }}
                     />
+                    {errors.lastName && <p className="error-text">{errors.lastName}</p>}
                 </label>
 
                 <label>
@@ -67,8 +90,10 @@ function EmployeeEntry() {
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        placeholder="Enter email address"
+                        placeholder="Please enter email address"
+                        style={{ borderColor: errors.email ? 'red' : '' }}
                     />
+                    {errors.email && <p className="error-text">{errors.email}</p>}
                 </label>
 
                 <label>
@@ -77,8 +102,10 @@ function EmployeeEntry() {
                         type="text"
                         value={department}
                         onChange={(e) => setDepartment(e.target.value)}
-                        placeholder="Enter department"
+                        placeholder="Please enter department"
+                        style={{ borderColor: errors.department ? 'red' : '' }}
                     />
+                    {errors.department && <p className="error-text">{errors.department}</p>}
                 </label>
 
                 <label>
@@ -87,9 +114,13 @@ function EmployeeEntry() {
                         type="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        placeholder="Enter password"
+                        placeholder="Please enter password"
+                        style={{ borderColor: errors.password ? 'red' : '' }}
                     />
+                    {errors.password && <p className="error-text">{errors.password}</p>}
                 </label>
+
+                {errors.apiError && <p className="error-text">{errors.apiError}</p>}
 
                 <button type="submit">Add Employee</button>
             </form>

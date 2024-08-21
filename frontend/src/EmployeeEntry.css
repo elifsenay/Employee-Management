@@ -64,3 +64,11 @@
 .employee-entry-container a:hover {
     color: #0056b3;
 }
+.error-text{
+    color: #c82333;
+    font-size: 0.65rem;
+    margin-top: 2px;
+}
+input.error{
+    border-color: red;
+}

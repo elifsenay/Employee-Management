@@ -7,6 +7,7 @@ import HomeButton from "./HomeButton";
 function LeaveRequestsList() {
     const [leaveRequests, setLeaveRequests] = useState([]);
     const [employees, setEmployees] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
     const token = localStorage.getItem('token');
     const navigate = useNavigate();
 
@@ -37,13 +38,19 @@ function LeaveRequestsList() {
         fetchData();
     }, [token]);
 
-    // Function to get employee name by ID
+    const filteredLeaveRequests = leaveRequests.filter(request => {
+        const employee = employees.find(emp => emp.id === request.employeeId);
+        const employeeName = employee ? `${employee.firstName} ${employee.lastName}` : '';
+        return employeeName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            request.startDate.includes(searchTerm) ||
+            request.endDate.includes(searchTerm);
+    });
+
     const getEmployeeName = (employeeId) => {
         const employee = employees.find(emp => emp.id === employeeId);
         return employee ? `${employee.firstName} ${employee.lastName}` : 'N/A';
     };
 
-    // Function to get remaining leave days by employee ID
     const getRemainingLeaveDays = (employeeId) => {
         const employee = employees.find(emp => emp.id === employeeId);
         return employee ? employee.remainingLeaveDays : 'N/A';
@@ -75,6 +82,13 @@ function LeaveRequestsList() {
             <HomeButton/>
             <LogoutButton />
             <h2>Leave Requests</h2>
+            <input
+                type="text"
+                placeholder="Search by employee name or date"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="search-bar"
+            />
             <table className="leave-requests-table">
                 <thead>
                 <tr>
@@ -86,7 +100,7 @@ function LeaveRequestsList() {
                 </tr>
                 </thead>
                 <tbody>
-                {leaveRequests.length > 0 && leaveRequests.map(request => (
+                {filteredLeaveRequests.length > 0 && filteredLeaveRequests.map(request => (
                     <tr key={request.id}>
                         <td>{getEmployeeName(request.employeeId)}</td>
                         <td>{getRemainingLeaveDays(request.employeeId)}</td>
