@@ -14,7 +14,6 @@ function LeaveRequest() {
     const [errors, setErrors] = useState({});
     const token = localStorage.getItem('token');
 
-    // Fetch employees
     useEffect(() => {
         fetch('http://localhost:8080/api/employees', {
             headers: {

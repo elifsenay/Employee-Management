@@ -11,6 +11,7 @@ import UpdateLeaveRequest from "./UpdateLeaveRequest";
 import PrivateRoute from './PrivateRoute';
 import './App.css';
 import ChangePassword from "./ChangePassword";
+import UploadDocument from "./UploadDocument";
 
 function App() {
     return (
@@ -58,6 +59,11 @@ function App() {
                     <Route path="/change-password/:employeeId" element={
                         <PrivateRoute>
                             <ChangePassword />
+                        </PrivateRoute>
+                    } />
+                    <Route path="/upload-document/:leaveRequestId" element={
+                        <PrivateRoute>
+                            <UploadDocument />
                         </PrivateRoute>
                     } />
                 </Routes>

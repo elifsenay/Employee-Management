@@ -22,6 +22,9 @@ public class LeaveRequest {
     @Column(name = "leave_days")
     private int leaveDays;
 
+    @Column(name = "document_path")
+    private String documentPath;
+
     // Constructors, getters and setters
 
     public LeaveRequest() {
@@ -72,4 +75,8 @@ public class LeaveRequest {
     public void setLeaveDays(int leaveDays) {
         this.leaveDays = leaveDays;
     }
+
+    public String getDocumentPath() { return documentPath; }
+
+    public void setDocumentPath(String documentPath) { this.documentPath = documentPath;}
 }

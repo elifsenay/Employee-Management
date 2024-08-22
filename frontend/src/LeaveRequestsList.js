@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import './LeaveRequestsList.css';
 import LogoutButton from "./LogoutButton";
 import HomeButton from "./HomeButton";
+import viewIcon from './view-files.png';
 
 function LeaveRequestsList() {
     const [leaveRequests, setLeaveRequests] = useState([]);
@@ -77,6 +78,14 @@ function LeaveRequestsList() {
         }
     };
 
+    const handleUploadDocument = (leaveRequestId) => {
+        navigate(`/upload-document/${leaveRequestId}`);
+    };
+
+    const handleViewDocument = (leaveRequestId, documentPath) => {
+        window.open(`http://localhost:8080/api/leaverequests/${leaveRequestId}/document?path=${documentPath}`, '_blank');
+    };
+
     return (
         <div className="leave-requests-container">
             <HomeButton/>
@@ -109,7 +118,12 @@ function LeaveRequestsList() {
                         <td className="actions">
                             <button className="update-button" onClick={() => handleUpdate(request.id)}>Update</button>
                             <button className="delete-button" onClick={() => handleDelete(request.id)}>Delete</button>
-                        </td>
+                            <button className="upload-button" onClick={() => handleUploadDocument(request.id)}>Upload Document</button>
+                            {request.documentPath && (
+                                <button className="view-button" onClick={() => handleViewDocument(request.id)}>
+                                    <img src={viewIcon} alt="View Document" />
+                                </button> )}
+                            </td>
                     </tr>
                 ))}
                 </tbody>
