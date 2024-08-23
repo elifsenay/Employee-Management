@@ -128,7 +128,7 @@ function LeaveRequestsList() {
                 ))}
                 </tbody>
             </table>
-            <button className="new-leave-request-button" onClick={() => navigate('/leave-request')}>
+            <button className="new-leave-request-button" onClick={() => navigate('/leave-requests')}>
                 Create New Leave Request
             </button>
         </div>

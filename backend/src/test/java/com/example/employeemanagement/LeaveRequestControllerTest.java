@@ -13,6 +13,7 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -105,6 +106,58 @@ public class LeaveRequestControllerTest {
                 .andExpect(jsonPath("$[1].employeeId").value(2));
     }
 
+    // Positive Test Case: Successfully uploading a valid document
+    @Test
+    public void testUploadDocumentSuccess() throws Exception {
+        MockMultipartFile file = new MockMultipartFile(
+                "file", "test.pdf", MediaType.APPLICATION_PDF_VALUE, "Sample PDF Content".getBytes()
+        );
+
+        when(leaveRequestService.saveDocument(any(), anyLong())).thenReturn("/uploads/test.pdf");
+
+        mockMvc.perform(multipart("/api/leaverequests/1/upload")
+                        .file(file)
+                        .param("leaveRequestId", "1")
+                        .header("Authorization", "Bearer test_token"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("Document uploaded successfully. Path: /uploads/test.pdf"));
+    }
+
+    // Negative Test Case: Uploading a file with an invalid file type
+    @Test
+    public void testUploadDocumentInvalidFileType() throws Exception {
+        MockMultipartFile file = new MockMultipartFile(
+                "file", "test.exe", MediaType.APPLICATION_OCTET_STREAM_VALUE, "Executable content".getBytes()
+        );
+
+        when(leaveRequestService.saveDocument(any(), anyLong())).thenThrow(new IllegalArgumentException("Invalid file type. Only images and PDFs are allowed."));
+
+        mockMvc.perform(multipart("/api/leaverequests/1/upload")
+                        .file(file)
+                        .param("leaveRequestId", "1")
+                        .header("Authorization", "Bearer test_token"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("Invalid file type. Only images and PDFs are allowed."));
+    }
+
+    // Negative Test Case: Uploading a file that exceeds the size limit
+    @Test
+    public void testUploadDocumentSizeLimitExceeded() throws Exception {
+        byte[] largeFileContent = new byte[6 * 1024 * 1024]; // 6MB
+        MockMultipartFile file = new MockMultipartFile(
+                "file", "large.pdf", MediaType.APPLICATION_PDF_VALUE, largeFileContent
+        );
+
+        when(leaveRequestService.saveDocument(any(), anyLong())).thenThrow(new IllegalArgumentException("File size exceeds the limit of 5MB."));
+
+        mockMvc.perform(multipart("/api/leaverequests/1/upload")
+                        .file(file)
+                        .param("leaveRequestId", "1")
+                        .header("Authorization", "Bearer test_token"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("File size exceeds the limit of 5MB."));
+    }
+
     // Negative Test Case: Retrieving a non-existent leave request by ID
     @Test
     public void testGetLeaveRequestById_Negative() throws Exception {
@@ -114,5 +167,6 @@ public class LeaveRequestControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
+
 
 }

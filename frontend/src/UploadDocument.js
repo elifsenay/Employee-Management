@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import './UploadDocument.css';
 import HomeButton from './HomeButton';
 import LogoutButton from './LogoutButton';
@@ -8,7 +8,8 @@ import trashIcon from './115789_trash_icon.png';
 function UploadDocument() {
     const [file, setFile] = useState(null);
     const [feedback, setFeedback] = useState('');
-    const { leaveRequestId } = useParams(); // Get the leave request ID from the URL params
+    const { leaveRequestId } = useParams();
+    const navigate = useNavigate(); // Hook to navigate between routes
     const token = localStorage.getItem('token');
 
     const handleFileChange = (e) => {
@@ -57,6 +58,9 @@ function UploadDocument() {
             });
     };
 
+    const handleDone = () => {
+        navigate('/leave-requests-list'); // Redirect to the Leave Requests list page
+    };
 
     return (
         <div className="upload-document-container">
@@ -84,6 +88,9 @@ function UploadDocument() {
                 <button type="submit" disabled={!file}>Upload</button>
             </form>
             {feedback && <p className={`feedback ${feedback.includes('Error') ? 'error-text' : ''}`}>{feedback}</p>}
+            {feedback === 'File uploaded successfully'}
+                <button className="done-button" onClick={handleDone}>Done</button>
+
         </div>
     );
 }
