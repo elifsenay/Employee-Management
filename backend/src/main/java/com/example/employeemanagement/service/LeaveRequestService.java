@@ -1,5 +1,6 @@
 package com.example.employeemanagement.service;
 
+import com.example.employeemanagement.exception.ResourceNotFoundException;
 import com.example.employeemanagement.model.Employee;
 import com.example.employeemanagement.model.LeaveRequest;
 import com.example.employeemanagement.repository.EmployeeRepository;
@@ -10,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -180,6 +182,28 @@ public class LeaveRequestService {
         leaveRequestRepository.save(leaveRequest);
 
         return filePath.toString();
+    }
+
+    public void deleteDocument(Long leaveRequestId) throws IOException {
+
+        LeaveRequest leaveRequest = leaveRequestRepository.findById(leaveRequestId)
+                .orElseThrow(() -> new ResourceNotFoundException("Leave request not found"));
+
+        String documentPath = leaveRequest.getDocumentPath();
+
+        if (documentPath != null) {
+            File file = new File(documentPath);
+            if (file.exists()) {
+                if (!file.delete()) {
+                    throw new IOException("Failed to delete the document");
+                }
+            }
+
+            leaveRequest.setDocumentPath(null);
+            leaveRequestRepository.save(leaveRequest);
+        } else {
+            throw new IllegalStateException("No document found for this leave request");
+        }
     }
 
 

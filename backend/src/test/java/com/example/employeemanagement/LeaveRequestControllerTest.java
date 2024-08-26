@@ -12,6 +12,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
@@ -157,6 +158,7 @@ public class LeaveRequestControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(content().string("File size exceeds the limit of 5MB."));
     }
+
 
     // Negative Test Case: Retrieving a non-existent leave request by ID
     @Test

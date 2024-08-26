@@ -1,5 +1,6 @@
 package com.example.employeemanagement.service;
 
+import com.example.employeemanagement.exception.ResourceNotFoundException;
 import com.example.employeemanagement.model.Employee;
 import com.example.employeemanagement.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,5 +93,11 @@ public class EmployeeService {
 
     public boolean checkOldPassword(String oldPassword, Employee employee) {
         return passwordEncoder.matches(oldPassword, employee.getPassword());
+    }
+
+    public String getEmailById(Long employeeId) {
+        return employeeRepository.findById(employeeId)
+                .map(Employee::getEmail)
+                .orElseThrow(() -> new ResourceNotFoundException("Employee not found with id " + employeeId));
     }
 }

@@ -4,6 +4,7 @@ import './LeaveRequestsList.css';
 import LogoutButton from "./LogoutButton";
 import HomeButton from "./HomeButton";
 import viewIcon from './view-files.png';
+import trashIcon from './115789_trash_icon.png';
 
 function LeaveRequestsList() {
     const [leaveRequests, setLeaveRequests] = useState([]);
@@ -78,12 +79,36 @@ function LeaveRequestsList() {
         }
     };
 
+    const handleDeleteDocument = async (leaveRequestId) => {
+        try {
+            const response = await fetch(`http://localhost:8080/api/leaverequests/${leaveRequestId}/document`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${token}` },
+            });
+            if (response.ok) {
+                // Successfully deleted, update UI
+                setLeaveRequests(prevRequests =>
+                    prevRequests.map(request => {
+                        if (request.id === leaveRequestId) {
+                            return { ...request, documentPath: null }; // Clear document path
+                        }
+                        return request;
+                    })
+                );
+            } else {
+                alert('Failed to delete document');
+            }
+        } catch (error) {
+            console.error('Error deleting document:', error);
+        }
+    };
+
     const handleUploadDocument = (leaveRequestId) => {
         navigate(`/upload-document/${leaveRequestId}`);
     };
 
-    const handleViewDocument = (leaveRequestId, documentPath) => {
-        window.open(`http://localhost:8080/api/leaverequests/${leaveRequestId}/document?path=${documentPath}`, '_blank');
+    const handleViewDocument = (leaveRequestId) => {
+        window.open(`http://localhost:8080/api/leaverequests/${leaveRequestId}/document`, '_blank');
     };
 
     return (
@@ -119,10 +144,18 @@ function LeaveRequestsList() {
                             <button className="update-button" onClick={() => handleUpdate(request.id)}>Update</button>
                             <button className="delete-button" onClick={() => handleDelete(request.id)}>Delete</button>
                             <button className="upload-button" onClick={() => handleUploadDocument(request.id)}>Upload Document</button>
-                            {request.documentPath && (
-                                <button className="view-button" onClick={() => handleViewDocument(request.id)}>
-                                    <img src={viewIcon} alt="View Document" />
-                                </button> )}
+                            {request.documentPath ? (
+                                <>
+                                    <button className="view-button" onClick={() => handleViewDocument(request.id)}>
+                                        <img src={viewIcon} alt="View Document" />
+                                    </button>
+                                    <button className="remove-button" onClick={() => handleDeleteDocument(request.id)}>
+                                        <img src={trashIcon} alt="Delete Document" />
+                                    </button>
+                                </>
+                            ) : (
+                                <span></span>
+                            )}
                             </td>
                     </tr>
                 ))}
