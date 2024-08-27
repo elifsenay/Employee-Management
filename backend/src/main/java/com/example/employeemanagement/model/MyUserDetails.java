@@ -1,8 +1,11 @@
 package com.example.employeemanagement.model;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
 import java.util.Collection;
+import java.util.Collections;
 
 public class MyUserDetails implements UserDetails {
 
@@ -14,7 +17,8 @@ public class MyUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null; // Implement roles if needed
+        String role = employee.getRole();
+        return Collections.singleton(new SimpleGrantedAuthority(role));
     }
 
     @Override
@@ -45,5 +49,14 @@ public class MyUserDetails implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public boolean isAdmin() {
+        return getAuthorities().stream()
+                .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
+    }
+
+    public Long getEmployeeId() {
+        return employee.getId();
     }
 }

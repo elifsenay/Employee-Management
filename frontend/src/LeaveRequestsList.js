@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, {useState, useEffect} from 'react';
+import {useNavigate} from 'react-router-dom';
 import './LeaveRequestsList.css';
 import LogoutButton from "./LogoutButton";
 import HomeButton from "./HomeButton";
@@ -17,10 +17,10 @@ function LeaveRequestsList() {
         const fetchData = async () => {
             try {
                 const leaveRequestsResponse = await fetch('http://localhost:8080/api/leaverequests', {
-                    headers: { 'Authorization': `Bearer ${token}` },
+                    headers: {'Authorization': `Bearer ${token}`},
                 });
                 const employeesResponse = await fetch('http://localhost:8080/api/employees', {
-                    headers: { 'Authorization': `Bearer ${token}` },
+                    headers: {'Authorization': `Bearer ${token}`},
                 });
 
                 if (leaveRequestsResponse.ok && employeesResponse.ok) {
@@ -66,7 +66,7 @@ function LeaveRequestsList() {
         try {
             const response = await fetch(`http://localhost:8080/api/leaverequests/${id}`, {
                 method: 'DELETE',
-                headers: { 'Authorization': `Bearer ${token}` },
+                headers: {'Authorization': `Bearer ${token}`},
             });
 
             if (response.ok) {
@@ -83,14 +83,14 @@ function LeaveRequestsList() {
         try {
             const response = await fetch(`http://localhost:8080/api/leaverequests/${leaveRequestId}/document`, {
                 method: 'DELETE',
-                headers: { 'Authorization': `Bearer ${token}` },
+                headers: {'Authorization': `Bearer ${token}`},
             });
             if (response.ok) {
                 // Successfully deleted, update UI
                 setLeaveRequests(prevRequests =>
                     prevRequests.map(request => {
                         if (request.id === leaveRequestId) {
-                            return { ...request, documentPath: null }; // Clear document path
+                            return {...request, documentPath: null}; // Clear document path
                         }
                         return request;
                     })
@@ -107,14 +107,28 @@ function LeaveRequestsList() {
         navigate(`/upload-document/${leaveRequestId}`);
     };
 
-    const handleViewDocument = (leaveRequestId) => {
-        window.open(`http://localhost:8080/api/leaverequests/${leaveRequestId}/document`, '_blank');
+    const handleViewDocument = async (leaveRequestId) => {
+        const res = await fetch(`http://localhost:8080/api/leaverequests/${leaveRequestId}/document/download`,{
+            headers: {'Authorization': `Bearer ${token}`},
+        });
+        if (res.ok) {
+            const url = window.URL.createObjectURL(await res.blob());
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'document.pdf'; // You can change the filename dynamically
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+        } else {
+            alert("Failed to download document");
+        }
     };
+
 
     return (
         <div className="leave-requests-container">
             <HomeButton/>
-            <LogoutButton />
+            <LogoutButton/>
             <h2>Leave Requests</h2>
             <input
                 type="text"
@@ -143,20 +157,23 @@ function LeaveRequestsList() {
                         <td className="actions">
                             <button className="update-button" onClick={() => handleUpdate(request.id)}>Update</button>
                             <button className="delete-button" onClick={() => handleDelete(request.id)}>Delete</button>
-                            <button className="upload-button" onClick={() => handleUploadDocument(request.id)}>Upload Document</button>
+                            <button className="upload-button" onClick={() => handleUploadDocument(request.id)}>Upload
+                                Document
+                            </button>
                             {request.documentPath ? (
                                 <>
-                                    <button className="view-button" onClick={() => handleViewDocument(request.id)}>
-                                        <img src={viewIcon} alt="View Document" />
+                                    <button className="view-button"
+                                            onClick={() => handleViewDocument(request.id)}>
+                                        <img src={viewIcon} alt="View Document"/>
                                     </button>
                                     <button className="remove-button" onClick={() => handleDeleteDocument(request.id)}>
-                                        <img src={trashIcon} alt="Delete Document" />
+                                        <img src={trashIcon} alt="Delete Document"/>
                                     </button>
                                 </>
                             ) : (
                                 <span></span>
                             )}
-                            </td>
+                        </td>
                     </tr>
                 ))}
                 </tbody>

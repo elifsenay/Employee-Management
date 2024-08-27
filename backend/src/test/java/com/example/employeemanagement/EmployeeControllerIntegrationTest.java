@@ -65,7 +65,7 @@ public class EmployeeControllerIntegrationTest {
     // Positive Test Case: Delete an existing employee successfully
     @Test
     public void testDeleteEmployee() throws Exception {
-        Employee employee = new Employee("John", "Doe", "john.doe@example.com", "IT", 15, "password");
+        Employee employee = new Employee("John", "Doe", "john.doe@example.com", "IT", 15, "password", "ADMIN");
         Employee savedEmployee = employeeRepository.save(employee);
 
         mockMvc.perform(delete("/api/employees/" + savedEmployee.getId())
@@ -77,7 +77,7 @@ public class EmployeeControllerIntegrationTest {
     // Positive Test Case: Retrieve an employee by ID successfully
     @Test
     public void testGetEmployeeById() throws Exception {
-        Employee employee = new Employee("John", "Doe", "john.doe@example.com", "IT", 15, "password");
+        Employee employee = new Employee("John", "Doe", "john.doe@example.com", "IT", 15, "password","ADMIN");
         Employee savedEmployee = employeeRepository.save(employee);
 
         mockMvc.perform(get("/api/employees/" + savedEmployee.getId())

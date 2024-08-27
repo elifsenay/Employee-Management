@@ -20,10 +20,12 @@ function UploadDocument() {
         setFile(null);
     };
 
-    const handleFileUpload = (e) => {
+    const handleFileUpload = async (e) => {
         e.preventDefault();
 
         const formData = new FormData();
+        console.log(formData);
+        debugger;
         formData.append("file", file);
 
         if (!leaveRequestId || isNaN(leaveRequestId)) {
@@ -31,7 +33,8 @@ function UploadDocument() {
             return;
         }
 
-        fetch(`http://localhost:8080/api/leaverequests/${leaveRequestId}/upload`, {
+
+        await fetch(`http://localhost:8080/api/leaverequests/${leaveRequestId}/upload`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${token}`,

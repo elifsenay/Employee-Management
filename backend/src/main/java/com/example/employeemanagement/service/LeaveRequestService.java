@@ -6,12 +6,15 @@ import com.example.employeemanagement.model.LeaveRequest;
 import com.example.employeemanagement.repository.EmployeeRepository;
 import com.example.employeemanagement.repository.LeaveRequestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.awt.*;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -35,7 +38,6 @@ public class LeaveRequestService {
     private static final String UPLOAD_DIR = "uploads/";
 
     public LeaveRequest saveLeaveRequest(LeaveRequest leaveRequest) {
-        // Check for null dates
         if (leaveRequest.getStartDate() == null || leaveRequest.getEndDate() == null) {
             throw new IllegalArgumentException("Start date and end date cannot be null");
         }
@@ -46,12 +48,10 @@ public class LeaveRequestService {
             Employee employee = optionalEmployee.get();
             long daysBetween = ChronoUnit.DAYS.between(leaveRequest.getStartDate(), leaveRequest.getEndDate()) + 1;
 
-            // Check for invalid date range
             if (daysBetween < 0) {
                 throw new IllegalStateException("End date cannot be before start date");
             }
 
-            // Check for overlapping dates
             List<LeaveRequest> existingRequests = leaveRequestRepository.findByEmployeeId(leaveRequest.getEmployeeId());
             for (LeaveRequest existingRequest : existingRequests) {
                 if (!(leaveRequest.getEndDate().isBefore(existingRequest.getStartDate()) ||
@@ -73,9 +73,6 @@ public class LeaveRequestService {
             throw new IllegalArgumentException("Employee not found");
         }
     }
-
-
-
 
     public List<LeaveRequest> getAllLeaveRequests() {
         return leaveRequestRepository.findAll();
@@ -206,5 +203,34 @@ public class LeaveRequestService {
         }
     }
 
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+    public String getDocumentPathById(Long leaveRequestId) {
+        String sql = "SELECT document_path FROM leave_request WHERE id = ?";
+        return jdbcTemplate.queryForObject(sql, new Object[]{leaveRequestId}, String.class);
+    }
 
+    public File getDocumentByPath(Long leaveRequestId) throws IOException {
+        String documentPath = getDocumentPathById(leaveRequestId);
+
+        if (documentPath != null && !documentPath.isEmpty()) {
+            Path path = Paths.get(documentPath);
+            if (Files.exists(path)) {
+                return path.toFile(); // Return the file instead of InputStreamResource
+            }
+        }
+        throw new FileNotFoundException("Document not found for LeaveRequest ID: " + leaveRequestId);
+    }
+
+    public void openDocumentFolder(Long leaveRequestId) throws IOException {
+        File file = getDocumentByPath(leaveRequestId);
+        System.out.println(file.toString());
+
+        if (file.exists()) {
+            Desktop desktop = Desktop.getDesktop();
+            desktop.open(file.getParentFile()); // Opens the folder containing the file
+        } else {
+            throw new IOException("Document path does not exist.");
+        }
+    }
 }

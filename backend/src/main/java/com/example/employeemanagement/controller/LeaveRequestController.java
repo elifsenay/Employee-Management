@@ -7,6 +7,8 @@ import com.example.employeemanagement.service.EmployeeService;
 import com.example.employeemanagement.service.LeaveRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -14,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -40,7 +43,7 @@ public class LeaveRequestController {
 
         Long employeeId = leaveRequest.getEmployeeId();
         String employeeEmail = employeeService.getEmailById(employeeId);
-        emailService.sendEmail(employeeEmail, "Leave Request Created", "Your leave request has been successfully submitted.");
+        emailService.sendEmail(employeeEmail, "Leave Request Created", "Your leave request has been successfully submitted. Requested leave: " + leaveRequest.getStartDate() +" - "+ leaveRequest.getEndDate());
 
         return new ResponseEntity<>(savedLeaveRequest, HttpStatus.OK);
     }
@@ -100,12 +103,12 @@ public class LeaveRequestController {
         }
 
         String email = employeeService.getEmailById(leaveRequest.getEmployeeId());
-        emailService.sendEmail(email, "Leave Request Deleted", "Your leave request has been deleted successfully.");
+        emailService.sendEmail(email, "Leave Request Deleted", "Your leave request has been deleted successfully. Deleted leave request: "+ leaveRequest.getStartDate() +" - "+ leaveRequest.getEndDate());
 
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/{leaveRequestId}/document")
+    @GetMapping("/{leaveRequestId}/")
     public ResponseEntity<InputStreamResource> getDocument(@PathVariable Long leaveRequestId) throws IOException {
         LeaveRequest leaveRequest = leaveRequestService.getLeaveRequestById(leaveRequestId)
                 .orElseThrow(() -> new ResourceNotFoundException("Leave Request not found with id " + leaveRequestId));
@@ -128,7 +131,15 @@ public class LeaveRequestController {
             return ResponseEntity.notFound().build();
         }
     }
-
+    @PostMapping("/{leaveRequestId}/opendocumentfolder")
+    public ResponseEntity<Void> openDocumentFolder(@PathVariable Long leaveRequestId) {
+        try {
+            leaveRequestService.openDocumentFolder(leaveRequestId); // Call the service method
+            return ResponseEntity.ok().build();
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
     @DeleteMapping("/{leaveRequestId}/document")
     public ResponseEntity<Void> deleteDocument(@PathVariable Long leaveRequestId) throws IOException {
         LeaveRequest leaveRequest = leaveRequestService.getLeaveRequestById(leaveRequestId)
@@ -140,6 +151,21 @@ public class LeaveRequestController {
         emailService.sendEmail(email, "Document Deleted", "The document associated with your leave request has been deleted successfully.");
 
         return ResponseEntity.noContent().build();
+    }
+    @GetMapping("/{leaveRequestId}/document/download")
+    public ResponseEntity<Resource> downloadDocument(@PathVariable Long leaveRequestId) throws IOException {
+        String documentPath = leaveRequestService.getDocumentPathById(leaveRequestId);
+        Path path = Paths.get(documentPath);
+
+        if (Files.exists(path)) {
+            Resource resource = new UrlResource(path.toUri());
+            return ResponseEntity.ok()
+                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + path.getFileName().toString() + "\"")
+                    .body(resource);
+        } else {
+            throw new FileNotFoundException("Document not found for LeaveRequest ID: " + leaveRequestId);
+        }
     }
 
 }

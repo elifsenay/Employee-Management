@@ -37,17 +37,20 @@ public class Employee {
     @Size(min = 8, message = "Password should be no less than 8 characters")
     private String password;
 
+    private String role;
+
     // Constructors, getters and setters
     public Employee() {
     }
 
-    public Employee(String firstName, String lastName, String email, String department, int remainingLeaveDays, String password) {
+    public Employee(String firstName, String lastName, String email, String department, int remainingLeaveDays, String password, String role) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.department = department;
         this.remainingLeaveDays = remainingLeaveDays; // Default value
         this.password = password;
+        this.role = role;
     }
 
     // Getters and Setters
@@ -102,4 +105,8 @@ public class Employee {
     public String getPassword() {return password;}
 
     public void setPassword(String password) {this.password = password;}
+
+    public String getRole() {return role;}
+
+    public void setRole(String role) {this.role = role;}
 }

@@ -34,8 +34,8 @@ public class SecurityConfig {
         http.csrf().disable()
                 .cors().and() // Enable CORS
                 .authorizeRequests()
-                .antMatchers("/api/auth/**").permitAll()
-                .antMatchers("/api/change-password").authenticated()
+                .antMatchers("/api/auth/**").permitAll() // Allow login/signup page without authentication
+                .antMatchers("/api/**").hasRole("ADMIN") // Ensure all API endpoints are accessible only to admins
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);

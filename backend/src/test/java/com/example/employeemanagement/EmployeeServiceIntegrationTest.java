@@ -25,13 +25,13 @@ public class EmployeeServiceIntegrationTest {
     @BeforeEach
     public void setUp() {
         employeeRepository.deleteAll(); // Clear the database before each test
-        Employee existingEmployee = new Employee("Existing", "Employee", "existing@example.com", "HR", 15, "password");
+        Employee existingEmployee = new Employee("Existing", "Employee", "existing@example.com", "HR", 15, "password","ADMIN");
         employeeRepository.save(existingEmployee);
     }
 
     @Test
     public void testUpdateEmployee() {
-        Employee employee = new Employee("John", "Doe", "john.doe@example.com", "IT", 15, "password");
+        Employee employee = new Employee("John", "Doe", "john.doe@example.com", "IT", 15, "password","ADMIN");
         Employee savedEmployee = employeeService.saveEmployee(employee);
 
         Employee updatedDetails = new Employee();

@@ -24,9 +24,9 @@ public class EmployeeService {
     }
 
     public Employee saveEmployee(Employee employee) {
-        // Hash the password before saving
         String hashedPassword = passwordEncoder.encode(employee.getPassword());
         employee.setPassword(hashedPassword);
+        employee.setRole("ROLE_ADMIN");
         return employeeRepository.save(employee);
     }
 

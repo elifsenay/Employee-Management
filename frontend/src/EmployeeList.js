@@ -99,7 +99,7 @@ function EmployeeList() {
                         <td className="action-buttons">
                             <button className="update-button" onClick={() => handleUpdate(employee.id)}>Update</button>
                             <button className="delete-button" onClick={() => handleDelete(employee.id)}>Delete</button>
-                            <button className="change-password-button" onClick={() => handleChangePassword(employee.id)}>Change Password</button>
+                            {} <button className="change-password-button" onClick={() => handleChangePassword(employee.id)}>Change Password</button>
                         </td>
                     </tr>
                 ))}

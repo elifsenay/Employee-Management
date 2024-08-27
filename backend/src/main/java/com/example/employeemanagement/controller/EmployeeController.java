@@ -52,7 +52,7 @@ public class EmployeeController {
                 throw new ResourceNotFoundException("Employee not found with id " + id);
             }
         } catch (NumberFormatException e) {
-            return ResponseEntity.badRequest().body(null); // Return 400 Bad Request for invalid ID
+            return ResponseEntity.badRequest().body(null);
         }
     }
 
