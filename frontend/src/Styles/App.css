@@ -1,0 +1,17 @@
+
+.App {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  flex-direction: column;
+  font-family: 'Montserrat',sans-serif;
+}
+
+.employee-entry, .leave-entry, .employee-list {
+  border: 1px solid #ccc;
+  padding: 20px;
+  margin: 10px;
+  width: 300px;
+  text-align: center;
+}

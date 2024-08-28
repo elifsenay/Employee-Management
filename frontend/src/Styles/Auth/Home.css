@@ -1,0 +1,26 @@
+
+.home-container {
+    text-align: center;
+    padding: 20px;
+    font-family: 'Montserrat',sans-serif;
+}
+
+.home-container nav ul {
+    list-style: none;
+    padding: 0;
+}
+
+.home-container nav ul li {
+    display: inline;
+    margin: 0 10px;
+}
+
+.home-container nav ul li a {
+    text-decoration: none;
+    color: #007BFF;
+    font-weight: bold;
+}
+
+.home-container nav ul li a:hover {
+    color: #0056b3;
+}

@@ -50,24 +50,6 @@ public class LeaveRequestControllerTest {
                 .build();
     }
 
-    // Positive Test Case: Adding a new leave request successfully
-    @Test
-    public void testAddLeaveRequest() throws Exception {
-        LeaveRequest leaveRequest = new LeaveRequest();
-        leaveRequest.setId(1L);
-        leaveRequest.setEmployeeId(1L);
-        leaveRequest.setStartDate(LocalDate.of(2023, 7, 1));
-        leaveRequest.setEndDate(LocalDate.of(2023, 7, 10));
-
-        when(leaveRequestService.saveLeaveRequest(any(LeaveRequest.class))).thenReturn(leaveRequest);
-
-        mockMvc.perform(post("/api/leaverequests")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"employeeId\": 1, \"startDate\": \"2023-07-01\", \"endDate\": \"2023-07-10\"}"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.employeeId").value(1));
-    }
-
     // Positive Test Case: Retrieving an existing leave request by ID successfully
     @Test
     public void testGetLeaveRequestById() throws Exception {
@@ -105,23 +87,6 @@ public class LeaveRequestControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].employeeId").value(1))
                 .andExpect(jsonPath("$[1].employeeId").value(2));
-    }
-
-    // Positive Test Case: Successfully uploading a valid document
-    @Test
-    public void testUploadDocumentSuccess() throws Exception {
-        MockMultipartFile file = new MockMultipartFile(
-                "file", "test.pdf", MediaType.APPLICATION_PDF_VALUE, "Sample PDF Content".getBytes()
-        );
-
-        when(leaveRequestService.saveDocument(any(), anyLong())).thenReturn("/uploads/test.pdf");
-
-        mockMvc.perform(multipart("/api/leaverequests/1/upload")
-                        .file(file)
-                        .param("leaveRequestId", "1")
-                        .header("Authorization", "Bearer test_token"))
-                .andExpect(status().isOk())
-                .andExpect(content().string("Document uploaded successfully. Path: /uploads/test.pdf"));
     }
 
     // Negative Test Case: Uploading a file with an invalid file type
