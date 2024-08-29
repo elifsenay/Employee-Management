@@ -26,8 +26,13 @@
     color: white;
 }
 
-.leave-requests-table td {
-    background-color: #f9f9f9;
+/* Darken every other line */
+.leave-requests-table tr:nth-child(even) td {
+    background-color: #e9e9e9 !important;
+}
+
+.leave-requests-table tr:nth-child(odd) td {
+    background-color: #f9f9f9 !important;
 }
 
 .actions {
@@ -48,6 +53,14 @@
     font-family: 'Montserrat',sans-serif;
 }
 
+.upload-button{
+    background-color: #28a745;
+}
+
+.upload-button:hover{
+    background-color: #218838;
+}
+
 .update-button {
     background-color: #007bff;
 }
@@ -63,7 +76,6 @@
 .delete-button:hover {
     background-color: #c82333;
 }
-
 
 @media (max-width: 768px) {
     .leave-requests-table, th, td {
@@ -111,6 +123,7 @@
     height: 24px;
     cursor: pointer;
 }
+
 .view-button,
 .remove-button {
     background-color: transparent;

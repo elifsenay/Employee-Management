@@ -16,7 +16,6 @@ h2 {
     border-collapse: collapse;
     border-radius: 8px;
     overflow: hidden;
-
 }
 
 .employee-list-table th, .employee-list-table td {
@@ -31,8 +30,13 @@ h2 {
     color: white;
 }
 
-.employee-list-table td {
-    background-color: #f9f9f9;
+/* Darken every other row */
+.employee-list-table tr:nth-child(even) td {
+    background-color: #e9e9e9; /* Darker background for even rows */
+}
+
+.employee-list-table tr:nth-child(odd) td {
+    background-color: #f9f9f9; /* Lighter background for odd rows */
 }
 
 .employee-list-table .action-buttons {
@@ -150,4 +154,3 @@ h2 {
     width: 100%;
     max-width: 400px;
 }
-
